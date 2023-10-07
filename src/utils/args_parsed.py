@@ -1,6 +1,9 @@
 import os
 import argparse
 
+import pathlib
+
+
 def dir_path(string):
     if os.path.isdir(string):
         return string
@@ -22,8 +25,8 @@ def store_vectors_args():
 
 def question_args():
     parser = argparse.ArgumentParser(
-                    prog='StoreVectors',
-                    description='Stores embedded vectors to ChromaDB')
+                    prog='question',
+                    description='Responds a given question using Llama2 and RAG technique')
 
     parser.add_argument('-c', '--collection', type=str, default="default")
     parser.add_argument('-q', '--question', type=str)
