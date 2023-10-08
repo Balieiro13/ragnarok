@@ -1,5 +1,9 @@
+import os
+import json
 import torch
 import chromadb
+
+from dotenv import load_dotenv
 
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -11,19 +15,19 @@ from langchain.chains import LLMChain
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 
+load_dotenv()
+
+
 def get_db_instance(collection):
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
-    model_kwargs = {'device': 'cuda'}
-    encode_kwargs = {'normalize_embeddings': False}
     embedding_function = HuggingFaceEmbeddings(
-        model_name=model_name,
-        model_kwargs=model_kwargs,
-        encode_kwargs=encode_kwargs
+        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
+        model_kwargs=json.loads(os.getenv("EMBEDDING_MODEL_KWARGS")),
+        encode_kwargs=json.loads(os.getenv("EMBEDDING_ENCODE_KWARGS")),
     )
 
     client = chromadb.HttpClient(
-        host='localhost',
-        port=8000, 
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT")
     )
 
     db = Chroma(
@@ -34,9 +38,8 @@ def get_db_instance(collection):
     return db
 
 
-
 def setup_llm_from_pipe():
-    model_name_or_path = "TheBloke/Llama-2-7B-GPTQ"
+    model_name_or_path = os.getenv("LLM_MODEL_NAME")
     model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
                                                 device_map={"": 0},
                                                 trust_remote_code=True,
@@ -59,6 +62,7 @@ def setup_llm_from_pipe():
     llm = HuggingFacePipeline(pipeline=pipe)
 
     return llm
+
 
 def setup_chain(llm, template):
     prompt = PromptTemplate(

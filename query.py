@@ -1,4 +1,4 @@
-from src.chain import (
+from src.qachain import (
     get_db_instance,
     setup_llm_from_pipe,
     setup_chain
