@@ -1,1 +1,4 @@
-go `cd .chroma` and then `sudo docker-compose up -d` to load up the DB container
+
+1. `cd .chroma` and `docker-compose up -d --build`
+2. run `python store_vectors.py -p ./path/to/data/`
+

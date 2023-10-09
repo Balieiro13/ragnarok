@@ -1,5 +1,5 @@
-import os
-import json
+import os, json
+
 from dotenv import load_dotenv
 
 import chromadb
