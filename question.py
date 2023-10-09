@@ -1,9 +1,11 @@
+from langchain.llms import OpenLLM
+
 from src.qachain import (
     get_db_instance,
-    setup_llm_from_pipe,
     setup_chain
 )
 from src.utils import args_parsed
+
 
 def main():
     args = args_parsed.question_args()
@@ -28,7 +30,17 @@ def main():
 
     db = get_db_instance(args.collection)
     retriever = db.as_retriever()
-    llm = setup_llm_from_pipe()
+
+    llm = OpenLLM(
+        server_url='http://localhost:3000',
+        max_new_tokens=256,
+        do_sample=True,
+        temperature=0.1,
+        top_p=1,
+        top_k=10,
+        repetition_penalty=1.18,
+    )
+
     chain = setup_chain(template=template, llm=llm)
 
     question = args.question
