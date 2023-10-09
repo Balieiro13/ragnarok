@@ -1,2 +1,0 @@
-IS_PERSISTENT=TRUE
-PERSIST_DIRECTORY=${./chromadb:-/chroma/chroma}
