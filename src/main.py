@@ -2,22 +2,24 @@ import argparse
 
 from langchain.llms import OpenLLM
 
-from src.qachain import (
+from setup import (
     get_db_instance,
-    setup_chain
+    setup_chain,
+    setup_rag_chain
 )
 
 
 def main(question, collection, prompt=None):
     default_template = '''
-    you are an assistant that answers questions based in a given context. use the following context to answer the question.
-    if you don't know the answer, just say that you don't know. use three sentences maximum and keep the answer concise.
+    System: You are an assistant that answers questions based on a given context. 
+    Use the following context to answer the question.
+    If you don't know the answer, just say that you don't know. 
 
-    context: {context}
+    Context: {context}
 
-    question: {question}
+    Question: {question}
 
-    only return the helpful answer below and nothing else:
+    Only return the helpful answer below and nothing else:
 
     helpful answer
     '''
@@ -27,24 +29,30 @@ def main(question, collection, prompt=None):
     else:
         template = default_template
 
-    db = get_db_instance(collection)
-    retriever = db.as_retriever()
+    retriever = get_db_instance(collection).as_retriever()
 
     llm = OpenLLM(
         server_url='http://localhost:3000',
         max_new_tokens=256,
         do_sample=True,
-        temperature=0.1,
-        top_p=1,
-        top_k=10,
-        repetition_penalty=1.18,
+        temperature=0.5,
+        top_p=0.95,
+        top_k=15,
+        repetition_penalty=1.18
     )
 
-    chain = setup_chain(template=template, llm=llm)
+    rag_chain = setup_rag_chain(
+        llm=llm,
+        retriever=retriever,
+        template=template
+    )
+    response = rag_chain.invoke(question)
 
-    context = retriever.get_relevant_documents(question)
-    response = chain.run({"context": context,
-                          "question": question})
+    # chain = setup_chain(template=template, llm=llm)
+    # context = retriever.get_relevant_documents(question)
+    # response = chain.run({"context": context,
+    #                       "question": question})
+
     print(response)
 
 if __name__=="__main__":

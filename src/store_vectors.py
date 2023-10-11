@@ -1,12 +1,15 @@
 import os
 import uuid
 import argparse
+from dotenv import load_dotenv
 
 import chromadb
 from chromadb.config import Settings
 
 from langchain.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+load_dotenv()
 
 def main(dir_path, collection, reset=False):
     loader = DirectoryLoader(
@@ -20,13 +23,13 @@ def main(dir_path, collection, reset=False):
     docs = loader.load()
 
     # Spliting text into chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=20)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300,chunk_overlap=20)
     docs_splitted = text_splitter.split_documents(docs)
 
     client = chromadb.HttpClient(
-        host='localhost',
-        port=8000,
-        settings=Settings(allow_reset=True)
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        settings=Settings(allow_reset=os.getenv("DB_ALLOW_RESET"))
     )
 
     if args.reset:
@@ -51,8 +54,8 @@ if __name__ == "__main__":
             raise NotADirectoryError(string)
 
     parser = argparse.ArgumentParser(
-                        prog='StoreVectors',
-                        description='Stores embedded vectors to ChromaDB'
+        prog='StoreVectors',
+        description='Stores embedded vectors to ChromaDB'
     )
     parser.add_argument(
         '-p', 
@@ -71,6 +74,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+
     main(
         dir_path=args.path,
         collection=args.collection,

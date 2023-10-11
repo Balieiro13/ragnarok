@@ -8,15 +8,27 @@ services:
   chromadb:
     image: ghcr.io/chroma-core/chroma:latest
     volumes:
-      # Default configuration for persist_directory in chromadb/config.py
-      # Currently it's located in "/chroma/chroma/"
-      - ./index-data:/chroma/chroma/
+      - /var/chromadb/index-data:/chroma/chroma/
     environment:
       - ALLOW_RESET=True
     ports:
       - 8000:8000
     networks:
       - net
+  llama:
+    image: thebloke--llama-2-13b-chat-gptq-service:ea078917a7e91c896787c73dba935f032ae658e9
+    ports:
+      - 3000:3000
+    networks:
+      - net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  
 
 volumes:
   backups:
