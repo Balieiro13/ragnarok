@@ -3,13 +3,12 @@ import argparse
 from langchain.llms import OpenLLM
 
 from setup import (
-    get_db_instance,
+    get_chromadb_collection,
     setup_chain,
-    setup_rag_chain
 )
 
 
-def main(question, collection, prompt=None):
+def main(question, collection_name, prompt=None):
     default_template = '''
     System: You are an assistant that answers questions based on a given context. 
     Use the following context to answer the question.
@@ -29,7 +28,7 @@ def main(question, collection, prompt=None):
     else:
         template = default_template
 
-    retriever = get_db_instance(collection).as_retriever()
+    retriever = get_chromadb_collection(collection_name).as_retriever()
 
     llm = OpenLLM(
         server_url='http://localhost:3000',
@@ -38,20 +37,13 @@ def main(question, collection, prompt=None):
         temperature=0.5,
         top_p=0.95,
         top_k=15,
-        repetition_penalty=1.18
+        repetition_penalty=1.15
     )
 
-    rag_chain = setup_rag_chain(
-        llm=llm,
-        retriever=retriever,
-        template=template
-    )
-    response = rag_chain.invoke(question)
-
-    # chain = setup_chain(template=template, llm=llm)
-    # context = retriever.get_relevant_documents(question)
-    # response = chain.run({"context": context,
-    #                       "question": question})
+    chain = setup_chain(template=template, llm=llm)
+    context = retriever.get_relevant_documents(question)
+    response = chain.run({"context": context,
+                          "question": question})
 
     print(response)
 
@@ -80,6 +72,6 @@ if __name__=="__main__":
 
     main(
         question=args.question,
-        collection=args.collection,
+        collection_name=args.collection,
         prompt=args.prompt
     ) 

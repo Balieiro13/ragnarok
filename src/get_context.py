@@ -1,9 +1,9 @@
 import argparse
 
-from setup import get_db_instance
+from setup import get_chromadb_collection
 
-def main(collection, question):
-    retriever = get_db_instance(collection).as_retriever()
+def main(collection_name, question):
+    retriever = get_chromadb_collection(collection_name).as_retriever()
     
     docs = retriever.get_relevant_documents(question)
     print(docs)
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(
-        collection=args.collection,
+        collection_name=args.collection,
         question=args.question
     )
 

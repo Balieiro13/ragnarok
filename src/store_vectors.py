@@ -11,7 +11,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 load_dotenv()
 
-def main(dir_path, collection, reset=False):
+def main(dir_path, collection_name, reset=False):
     loader = DirectoryLoader(
         dir_path,
         glob="*.pdf", 
@@ -35,8 +35,8 @@ def main(dir_path, collection, reset=False):
     if args.reset:
         client.reset()  # resets the database
 
-    collection = client.create_collection(
-        name=collection
+    collection = client.get_or_create_collection(
+        name=collection_name
     )
 
     for doc in docs_splitted:
@@ -77,6 +77,6 @@ if __name__ == "__main__":
 
     main(
         dir_path=args.path,
-        collection=args.collection,
+        collection_name=args.collection,
         reset=args.reset
     )
