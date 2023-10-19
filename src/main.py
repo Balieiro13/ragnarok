@@ -3,9 +3,11 @@ import argparse
 
 from dotenv import load_dotenv
 from langchain.llms import OpenLLM
+#from chromadb.config import Settings
 
-from utils.collection import get_chromadb_collection
+from utils.db import ChromaControl
 from utils.chain import setup_chain, get_llm
+
 
 load_dotenv()
 
@@ -29,10 +31,22 @@ def main(
     helpful answer
     '''
 
-    retriever = get_chromadb_collection(collection_name).as_retriever()
-    context = retriever.get_relevant_documents(question)
+    db = ChromaControl(
+        server_host = os.getenv("DB_HOST"),
+        server_port = os.getenv("DB_PORT"),
+    )
+
+        #settings    = Settings(allow_reset=os.getenv("DB_ALLOW_RESET"))
+    db.set_embedding_function(
+        model_name="all-MiniLM-L6-v2",
+        device="cuda",
+        normalize_embeddings=False
+    )
+
+    context = db.query(collection_name, question)
+
     llm = get_llm(os.getenv("LLM_SERVER"))
-    chain = setup_chain(template=template, llm=llm, verbose=verbose)
+    chain = setup_chain(template=default_template, llm=llm, verbose=verbose)
 
     response = chain.run({"context": context,
                           "question": question})
