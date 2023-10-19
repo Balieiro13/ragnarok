@@ -1,30 +1,32 @@
 import os
 import uuid
 import argparse
+from tqdm import tqdm
 from dotenv import load_dotenv
 
 import chromadb
 from chromadb.config import Settings
 
-from langchain.document_loaders import DirectoryLoader, PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from utils.data_loader import pdf_loader, split_data_in_chunks
+from utils.embed import get_embedding_model
 
 load_dotenv()
 
 def main(dir_path, collection_name, reset=False):
-    loader = DirectoryLoader(
-        dir_path,
-        glob="*.pdf", 
-        show_progress=True,
-        use_multithreading=True,
-        loader_cls=PyPDFLoader
+
+    embedding_model = get_embedding_model(
+        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
+        model_kwargs={"device": "cuda"},
+        encode_kwargs={"normalize_embeddings": False}
     )
+    
+    print("\nSplitting docs into chunks\n")
+    docs = pdf_loader(dir_path=dir_path,
+                      glob="*.pdf")
 
-    docs = loader.load()
-
-    # Spliting text into chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300,chunk_overlap=20)
-    docs_splitted = text_splitter.split_documents(docs)
+    chunks = split_data_in_chunks(data=docs,
+                                  chunk_size=300,
+                                  chunk_overlap=20)
 
     client = chromadb.HttpClient(
         host=os.getenv("DB_HOST"),
@@ -32,18 +34,20 @@ def main(dir_path, collection_name, reset=False):
         settings=Settings(allow_reset=os.getenv("DB_ALLOW_RESET"))
     )
 
-    if args.reset:
+    if reset:
         client.reset()  # resets the database
 
     collection = client.get_or_create_collection(
-        name=collection_name
+        name=collection_name,
+        embedding_function=embedding_model.embed_documents
     )
 
-    for doc in docs_splitted:
+    print("\nEmbedding Chunks\n")
+    for chunk in tqdm(chunks):
         collection.add(
             ids=[str(uuid.uuid1())], 
-            metadatas=doc.metadata,
-            documents=doc.page_content
+            metadatas=chunk.metadata,
+            documents=chunk.page_content
         )
 
 if __name__ == "__main__":

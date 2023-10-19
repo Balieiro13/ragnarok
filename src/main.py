@@ -1,14 +1,20 @@
+import os
 import argparse
 
+from dotenv import load_dotenv
 from langchain.llms import OpenLLM
 
-from setup import (
-    get_chromadb_collection,
-    setup_chain,
-)
+from utils.collection import get_chromadb_collection
+from utils.chain import setup_chain, get_llm
 
+load_dotenv()
 
-def main(question, collection_name, prompt=None):
+def main(
+    question:str,
+    collection_name:str,
+    verbose=False, 
+    ) -> None:
+
     default_template = '''
     System: You are an assistant that answers questions based on a given context. 
     Use the following context to answer the question.
@@ -23,28 +29,13 @@ def main(question, collection_name, prompt=None):
     helpful answer
     '''
 
-    if prompt:
-        template = "".join(prompt.readlines())
-    else:
-        template = default_template
-
     retriever = get_chromadb_collection(collection_name).as_retriever()
-
-    llm = OpenLLM(
-        server_url='http://localhost:3000',
-        max_new_tokens=256,
-        do_sample=True,
-        temperature=0.5,
-        top_p=0.95,
-        top_k=15,
-        repetition_penalty=1.15
-    )
-
-    chain = setup_chain(template=template, llm=llm)
     context = retriever.get_relevant_documents(question)
+    llm = get_llm(os.getenv("LLM_SERVER"))
+    chain = setup_chain(template=template, llm=llm, verbose=verbose)
+
     response = chain.run({"context": context,
                           "question": question})
-
     print(response)
 
 if __name__=="__main__":
@@ -64,14 +55,14 @@ if __name__=="__main__":
         type=str
     )
     parser.add_argument(
-        '--prompt', 
-        type=argparse.FileType("r")
+        '-v', 
+        '--verbose', 
+        action='store_true'
     )
-
     args = parser.parse_args()
 
     main(
         question=args.question,
         collection_name=args.collection,
-        prompt=args.prompt
+        verbose=args.verbose,
     ) 
