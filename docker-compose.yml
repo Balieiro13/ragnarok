@@ -16,7 +16,7 @@ services:
     networks:
       - net
   llama:
-    image: thebloke--llama-2-13b-chat-gptq-service:ea078917a7e91c896787c73dba935f032ae658e9
+    image: thebloke--llama-2-7b-chat-gptq-service:<put_your_tag>
     ports:
       - 3000:3000
     networks:
