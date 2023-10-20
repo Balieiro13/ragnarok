@@ -1,17 +1,6 @@
 version: '3.9'
 
 services:
-  tailscale:
-    hostname: llm-service                         # This will become the tailscale device name
-    image: tailscale/tailscale:latest
-    volumes:
-        - "/var/tailscale:/var/lib"        # State data will be stored in this directory
-        - "/dev/net/tun:/dev/net/tun"           # Required for tailscale to work
-    cap_add:                                    # Required for tailscale to work
-      - net_admin
-      - sys_module
-    command: tailscaled
-
   chromadb:
     image: ghcr.io/chroma-core/chroma:latest
     volumes:
@@ -20,22 +9,6 @@ services:
       - ALLOW_RESET=True
     ports:
       - 8000:8000
-    # networks:
-    #   - net
-
-  llama:
-    image: thebloke--llama-2-13b-chat-gptq-service:ea078917a7e91c896787c73dba935f032ae658e9
-    # ports:
-    #   - 3000:3000
-    network_mode: service:tailscale
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-  
 
 volumes:
   backups:
