@@ -3,7 +3,6 @@ import argparse
 
 from dotenv import load_dotenv
 from langchain.llms import OpenLLM
-#from chromadb.config import Settings
 
 from utils.db import ChromaControl
 from utils.chain import setup_chain, get_llm
@@ -36,7 +35,6 @@ def main(
         server_port = os.getenv("DB_PORT"),
     )
 
-        #settings    = Settings(allow_reset=os.getenv("DB_ALLOW_RESET"))
     db.set_embedding_function(
         model_name=os.getenv("EMBEDDING_MODEL_NAME"),
         device="cuda",
