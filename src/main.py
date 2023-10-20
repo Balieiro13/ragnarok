@@ -2,7 +2,6 @@ import os
 import argparse
 
 from dotenv import load_dotenv
-from langchain.llms import OpenLLM
 
 from utils.db import ChromaControl
 from utils.chain import setup_chain, get_llm
@@ -41,10 +40,10 @@ def main(
         normalize_embeddings=False
     )
 
-    context = db.query(collection_name, question)
-
     llm = get_llm(os.getenv("LLM_SERVER"))
-    chain = setup_chain(template=default_template, llm=llm, verbose=verbose)
+    context = db.query(collection_name, question)
+    chain = setup_chain(template=default_template, 
+                        llm=llm, verbose=verbose)
 
     response = chain.run({"context": context,
                           "question": question})

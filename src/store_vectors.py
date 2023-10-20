@@ -10,11 +10,7 @@ def main(dir_path, collection_name, reset=False):
     db = ChromaControl(
         server_host = os.getenv("DB_HOST"),
         server_port = os.getenv("DB_PORT"),
-        config={"allow_reset": os.getenv("DB_ALLOW_RESET")}
     )
-
-    if reset:
-        db.reset_chroma()
 
     db.set_embedding_function(
         model_name=os.getenv("EMBEDDING_MODEL_NAME"),
