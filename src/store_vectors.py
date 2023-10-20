@@ -17,7 +17,7 @@ def main(dir_path, collection_name, reset=False):
         db.reset_chroma()
 
     db.set_embedding_function(
-        model_name="all-MiniLM-L6-v2",
+        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
         device="cuda",
         normalize_embeddings=False
     )
