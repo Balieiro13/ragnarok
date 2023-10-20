@@ -1,9 +1,6 @@
-openllm==0.3.6
+openllm==0.3.9
 python-dotenv==1.0.0
-bentoml==1.1.6
-chromadb==0.4.13
-fastapi==0.103.2
-langchain==0.0.306
+chromadb==0.4.14
+langchain==0.0.319
 sentence-transformers==2.2.2
-pypdf==3.16.2
-python-dotenv==1.0.0
+pypdf==3.16.4

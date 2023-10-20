@@ -45,8 +45,8 @@ def main(
     chain = setup_chain(template=default_template, 
                         llm=llm, verbose=verbose)
 
-    response = chain.run({"context": context,
-                          "question": question})
+    response = chain.run(context=context, 
+                         question=question)
     print(response)
 
 if __name__=="__main__":

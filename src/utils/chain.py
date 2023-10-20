@@ -18,10 +18,9 @@ def get_llm(server_url:str, **llm_kwargs) -> OpenLLM:
 
 def setup_chain(llm, template, **kwargs):
     prompt = PromptTemplate(
-        input_variables=['context', 'question'],
+        input_variables=["context", "question"],
         template=template,
     )
 
     chain = LLMChain(llm=llm, prompt=prompt, **kwargs)
     return chain
-
