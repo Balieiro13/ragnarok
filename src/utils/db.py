@@ -2,7 +2,7 @@ import uuid
 from tqdm import tqdm
 from typing import List, Dict, Any, Optional
 
-import chromadb
+from chromadb import HttpClient
 from chromadb.types import Collection
 from chromadb.api.types import Document
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
@@ -17,6 +17,17 @@ class ChromaControl:
     def __init__(
         self, 
         server_host: str, 
+        server_port: Optional[int] = None, 
+        config: Optional[Dict[str, Any]] = None
+    ):
+        self.config = config
+        self.client = self.set_client(server_host,
+                                      server_port,
+                                      config)
+
+    @staticmethod
+    def set_client(
+        server_host:str, 
         server_port: int, 
         config: Optional[Dict[str, Any]] = None
     ):
@@ -25,10 +36,14 @@ class ChromaControl:
         else:
             settings = Settings()
 
-        self.config = config
-        self.client = chromadb.HttpClient(host=server_host,
-                                          port=server_port,
-                                          settings=settings)
+        if server_host.startswith("http"):
+            client = HttpClient(host=server_host,
+                                settings=settings)
+        else:
+            client = HttpClient(host=server_host,
+                                port=server_port,
+                                settings=settings)
+        return client 
 
     def reset_chroma(self):
         if self.config["allow_reset"]:
