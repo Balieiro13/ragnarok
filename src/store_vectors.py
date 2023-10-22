@@ -14,7 +14,7 @@ def main(dir_path, collection_name, reset=False):
 
     db.set_embedding_function(
         model_name=os.getenv("EMBEDDING_MODEL_NAME"),
-        device="cuda",
+        device=os.getenv("EMBEDDING_DEVICE"),
         normalize_embeddings=False
     )
 

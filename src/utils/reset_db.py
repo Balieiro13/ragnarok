@@ -9,7 +9,7 @@ def main():
     db = ChromaControl(
         server_host = os.getenv("DB_HOST"),
         server_port = os.getenv("DB_PORT"),
-        config={"allow_reset": os.getenv("DB_ALLOW_RESET")}
+        config={"allow_reset": True}
     )
 
     print("Reseting Database...")

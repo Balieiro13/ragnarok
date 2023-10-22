@@ -36,9 +36,10 @@ class ChromaControl:
         else:
             settings = Settings()
 
-        if server_host.startswith("http"):
+        if server_host.startswith("https"):
             client = HttpClient(host=server_host,
-                                settings=settings)
+                                settings=settings,
+                                ssl=True)
         else:
             client = HttpClient(host=server_host,
                                 port=server_port,

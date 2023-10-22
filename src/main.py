@@ -36,15 +36,15 @@ def main(
 
     db.set_embedding_function(
         model_name=os.getenv("EMBEDDING_MODEL_NAME"),
-        device="cuda",
+        device=os.getenv("EMBEDDING_DEVICE"),
         normalize_embeddings=False
     )
 
     llm = get_llm(os.getenv("LLM_SERVER"))
     context = db.query(collection_name, question)
+
     chain = setup_chain(template=default_template, 
                         llm=llm, verbose=verbose)
-
     response = chain.run(context=context, 
                          question=question)
     print(response)
