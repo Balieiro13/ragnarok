@@ -1,16 +1,36 @@
 # RAG App
 
-Por enquanto, a imagem do llama2 quantisado que está no `docker-compose.yml` foi gerada localmente atravéz do `openllm` e do `bentoml`. É preciso estudar como configurar um `bentofile.yaml` para gerar a imagem docker do modelo e facilmente rodar este código.
+Por enquanto, a imagem do llama2 quantisado foi gerada localmente atravéz do `openllm` e do `bentoml`. É preciso estudar como configurar um `bentofile.yaml` para gerar a imagem docker do modelo e facilmente rodar este código. Desta forma, estou expondo uma API com o llama2, disponível em `https://abps.ink/llm`
 
-Por enquanto, para conseguir rodá-lo, vc precisará rodar alguns comandos no terminal:
+Sugiro criar um virtual environment antes de começar este projeto:
+```
+$ python -m venv .venv
+```
+Para ativá-lo, dependerá do seu sistema operacional. Ver `https://docs.python.org/3/library/venv.html`
+
+Em seguida, instale as dependências:
 
 ```
-$ sh start.sh
+$ pip install -r requirements.txt
 ```
 
-Uma vez construído o bento, uma tag será gerada. Copie-a e rode
+## Instanciando o DB:
+
+Uma vez instalada as bibliotecas e assumindo que vc tenha o Docker instalado (caso não tenha, instale-o), rode de dentro do diretório raíz do projeto:
 ```
-$ bentoml containerize thebloke--llama-2-7b-chat-gptq-service:<tag> --opt progress=plain
+$ docker-compose up -d
 ```
 
-Desta forma, o `bentoml` construirá a imagem docker do llama2 que poderá ser inserida no `docker-compose.yml` da mesma forma: `image: thebloke--llama-2-7b-chat-gptq-service:<tag>`
+## Populando o DB:
+
+Assumindo que vc esteja no diretório raíz deste projeto, para indexar documentos no db, rode o seguinte comando:
+```
+$ python src/store_vectors.py -p /path/to/documents/directory -c "nome_da_coleção"
+```
+
+## Conversando com os documentos:
+Para fazer perguntas aos seus documentos indexados, rode
+```
+$ python src/main.py -q "Escreva sua pergunta." -c "nome_da_coleção"
+```
+Você pode adicionar um `-v` ou `--verbose` para ver todo o prompt gerado pela sua pergunta e seus documentos indexados.

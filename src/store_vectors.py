@@ -2,7 +2,7 @@ import os
 import argparse
 from dotenv import load_dotenv
 
-from utils.db import ChromaControl
+from db.manage import ChromaControl
 
 load_dotenv()
 
@@ -10,15 +10,11 @@ def main(dir_path, collection_name, reset=False):
     db = ChromaControl(
         server_host = os.getenv("DB_HOST"),
         server_port = os.getenv("DB_PORT"),
-        config={"allow_reset": os.getenv("DB_ALLOW_RESET")}
     )
 
-    if reset:
-        db.reset_chroma()
-
     db.set_embedding_function(
-        model_name="all-MiniLM-L6-v2",
-        device="cuda",
+        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
+        device=os.getenv("EMBEDDING_DEVICE"),
         normalize_embeddings=False
     )
 

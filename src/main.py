@@ -2,11 +2,9 @@ import os
 import argparse
 
 from dotenv import load_dotenv
-from langchain.llms import OpenLLM
-#from chromadb.config import Settings
 
-from utils.db import ChromaControl
-from utils.chain import setup_chain, get_llm
+from db.manage import ChromaControl
+from chain.setup import setup_chain, get_llm
 
 
 load_dotenv()
@@ -36,20 +34,19 @@ def main(
         server_port = os.getenv("DB_PORT"),
     )
 
-        #settings    = Settings(allow_reset=os.getenv("DB_ALLOW_RESET"))
     db.set_embedding_function(
-        model_name="all-MiniLM-L6-v2",
-        device="cuda",
+        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
+        device=os.getenv("EMBEDDING_DEVICE"),
         normalize_embeddings=False
     )
 
+    llm = get_llm(os.getenv("LLM_SERVER"))
     context = db.query(collection_name, question)
 
-    llm = get_llm(os.getenv("LLM_SERVER"))
-    chain = setup_chain(template=default_template, llm=llm, verbose=verbose)
-
-    response = chain.run({"context": context,
-                          "question": question})
+    chain = setup_chain(template=default_template, 
+                        llm=llm, verbose=verbose)
+    response = chain.run(context=context["documents"], 
+                         question=question)
     print(response)
 
 if __name__=="__main__":
