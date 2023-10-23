@@ -3,8 +3,8 @@ import argparse
 
 from dotenv import load_dotenv
 
-from utils.db import ChromaControl
-from utils.chain import setup_chain, get_llm
+from db.manage import ChromaControl
+from chain.setup import setup_chain, get_llm
 
 
 load_dotenv()
@@ -45,7 +45,7 @@ def main(
 
     chain = setup_chain(template=default_template, 
                         llm=llm, verbose=verbose)
-    response = chain.run(context=context, 
+    response = chain.run(context=context["documents"], 
                          question=question)
     print(response)
 

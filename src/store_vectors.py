@@ -2,7 +2,7 @@ import os
 import argparse
 from dotenv import load_dotenv
 
-from utils.db import ChromaControl
+from db.manage import ChromaControl
 
 load_dotenv()
 

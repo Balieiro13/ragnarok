@@ -11,7 +11,6 @@ def get_llm(server_url:str, **llm_kwargs) -> OpenLLM:
         temperature=0.5,
         top_p=0.95,
         top_k=15,
-        repetition_penalty=1.15,
         **llm_kwargs
     )
     return llm

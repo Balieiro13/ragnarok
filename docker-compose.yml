@@ -10,6 +10,18 @@ services:
     ports:
       - 8000:8000
 
+  llama:
+    image: thebloke--llama-2-13b-chat-gptq-service:ea078917a7e91c896787c73dba935f032ae658e9
+    ports:
+      - 3000:3000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
 volumes:
   backups:
     driver: local
