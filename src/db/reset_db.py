@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from db import ChromaControl
+from manage import ChromaControl
 
 load_dotenv()
 
