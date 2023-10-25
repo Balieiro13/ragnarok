@@ -2,7 +2,9 @@ import os
 import argparse
 from dotenv import load_dotenv
 
-from db.manage import ChromaControl
+from chroma.config import ChromaConfig
+from chroma.etl import ChromaETL
+from chroma.repository import ChromaRepository
 
 load_dotenv()
 
@@ -13,27 +15,34 @@ def main(
     chunk_overlap: int, 
     reset=False
     ) -> None:
-    db = ChromaControl(
-        server_host = os.getenv("DB_HOST"),
-        server_port = os.getenv("DB_PORT"),
+    db_config = ChromaConfig(
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        embedding_fn_kwargs={
+            "model_name": os.getenv("EMBEDDING_MODEL_NAME"),
+            "device": os.getenv("EMBEDDING_DEVICE"),
+            "normalize_embeddings": False
+        }
     )
 
-    db.set_embedding_function(
-        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
-        device=os.getenv("EMBEDDING_DEVICE"),
-        normalize_embeddings=False
+    db = ChromaRepository(
+        client=db_config.client,
+        embedding_fn=db_config.embedding_fn
     )
+    if reset:
+        db.reset()
 
-    db.create_collection(collection_name)
+    collection = db.get_or_create_collection(collection_name)
+    etl = ChromaETL(collection)
 
     print("Loading data from directory...")
-    db.load_data(dir_path)
-    db.split_text(chunk_size=chunk_size, 
+    etl.load_data(dir_path)
+    etl.split_text(chunk_size=chunk_size, 
                   chunk_overlap=chunk_overlap)
 
 
     print("Embedding data on the VectorStore...")
-    db.embed_data(collection_name)
+    etl.embed_data(collection_name)
 
 
 if __name__ == "__main__":

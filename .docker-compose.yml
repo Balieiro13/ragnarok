@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  chromadb:
+    image: ghcr.io/chroma-core/chroma:latest
+    volumes:
+      - /var/chromadb/index-data:/chroma/chroma/
+    environment:
+      - ALLOW_RESET=True
+    ports:
+      - 8000:8000
+  llama:
+    image: tb-llama2-7b-gptq 
+    ports:
+      - 3000:3000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  backups:
+    driver: local
+  index-data:
+    driver: local

@@ -3,7 +3,8 @@ import argparse
 
 from dotenv import load_dotenv
 
-from db.manage import ChromaControl
+from chroma.config import ChromaConfig
+from chroma.service import ChromaService
 from chain.setup import setup_chain, get_llm
 
 
@@ -28,23 +29,22 @@ def main(
 
     helpful answer
     '''
-
-    db = ChromaControl(
-        server_host = os.getenv("DB_HOST"),
-        server_port = os.getenv("DB_PORT"),
+    db_config = ChromaConfig(
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        embedding_fn_kwargs={
+            "model_name": os.getenv("EMBEDDING_MODEL_NAME"),
+            "device": os.getenv("EMBEDDING_DEVICE"),
+            "normalize_embeddings": False
+        }
     )
-
-    db.set_embedding_function(
-        model_name=os.getenv("EMBEDDING_MODEL_NAME"),
-        device=os.getenv("EMBEDDING_DEVICE"),
-        normalize_embeddings=False
-    )
+    db_service = ChromaService(db_config)
+    context = db_service.query(collection_name, question, k=5)
 
     llm = get_llm(os.getenv("LLM_SERVER"))
-    context = db.query(collection_name, question, k=5)
-
     chain = setup_chain(template=default_template, 
                         llm=llm, verbose=verbose)
+
     response = chain.run(context=context["documents"], 
                          question=question)
     print(response)
