@@ -41,7 +41,7 @@ def main(
     )
 
     llm = get_llm(os.getenv("LLM_SERVER"))
-    context = db.query(collection_name, question)
+    context = db.query(collection_name, question, k=5)
 
     chain = setup_chain(template=default_template, 
                         llm=llm, verbose=verbose)

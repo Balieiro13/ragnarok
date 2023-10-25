@@ -4,3 +4,4 @@ chromadb==0.4.14
 langchain==0.0.319
 sentence-transformers==2.2.2
 pypdf==3.16.4
+vllm==0.2.1
