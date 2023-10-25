@@ -6,7 +6,13 @@ from db.manage import ChromaControl
 
 load_dotenv()
 
-def main(dir_path, collection_name, reset=False):
+def main(
+    dir_path: str,
+    collection_name: str,
+    chunk_size: int, 
+    chunk_overlap: int, 
+    reset=False
+    ) -> None:
     db = ChromaControl(
         server_host = os.getenv("DB_HOST"),
         server_port = os.getenv("DB_PORT"),
@@ -22,7 +28,8 @@ def main(dir_path, collection_name, reset=False):
 
     print("Loading data from directory...")
     db.load_data(dir_path)
-    db.split_text(chunk_size=300, chunk_overlap=20)
+    db.split_text(chunk_size=chunk_size, 
+                  chunk_overlap=chunk_overlap)
 
 
     print("Embedding data on the VectorStore...")
@@ -50,10 +57,19 @@ if __name__ == "__main__":
         action='store_true'
     )
     parser.add_argument(
-        '-c', 
+        '-c',
         '--collection', 
         type=str, 
-        default="default"
+    )
+    parser.add_argument(
+        '--chunk-size', 
+        type=int, 
+        default=300
+    )
+    parser.add_argument(
+        '--chunk-overlap', 
+        type=int, 
+        default=20
     )
 
     args = parser.parse_args()
@@ -61,5 +77,7 @@ if __name__ == "__main__":
     main(
         dir_path=args.path,
         collection_name=args.collection,
-        reset=args.reset
+        reset=args.reset,
+        chunk_size=args.chunk_size,
+        chunk_overlap=args.chunk_overlap
     )
