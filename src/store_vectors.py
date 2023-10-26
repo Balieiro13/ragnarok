@@ -40,10 +40,8 @@ def main(
     etl.split_text(chunk_size=chunk_size, 
                   chunk_overlap=chunk_overlap)
 
-
     print("Embedding data on the VectorStore...")
     etl.embed_data()
-
 
 if __name__ == "__main__":
     def dir_path(string):

@@ -41,7 +41,14 @@ def main(
     db_service = ChromaService(db_config)
     context = db_service.query(collection_name, question, k=5)
 
-    llm = get_llm(os.getenv("LLM_SERVER"))
+    llm = get_llm(
+        server_url=os.getenv("LLM_SERVER"),
+        max_new_tokens=256,
+        do_sample=True,
+        temperature=0.5,
+        top_p=0.95,
+        top_k=15,
+    )
     chain = setup_chain(template=default_template, 
                         llm=llm, verbose=verbose)
 
@@ -55,15 +62,14 @@ if __name__=="__main__":
                     description='Responds a given question using Llama2 and RAG technique'
     )
     parser.add_argument(
+        'question',
+        type=str,
+    )
+    parser.add_argument(
         '-c', 
         '--collection',
         type=str, 
         default="default"
-    )
-    parser.add_argument(
-        '-q', 
-        '--question', 
-        type=str
     )
     parser.add_argument(
         '-v', 
