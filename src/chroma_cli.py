@@ -1,6 +1,7 @@
 import os
 import argparse
 from dotenv import load_dotenv
+from typing import Dict, Optional
 
 from chroma.config import ChromaConfig
 from chroma.repository import ChromaRepository
@@ -50,6 +51,17 @@ def store_vectors(
     etl.embed_data()
     print("Done!")
 
+def query(
+    collection_name: str,
+    query: str,
+    k: int = 5,
+    filter: Optional[Dict[str, str]] = None,
+    where_document: Optional[Dict[str, str]] = None,
+) -> None:
+    response = CLIENT.query(collection_name, query,
+                            k, filter, where_document)
+    print(response)
+    
 
 def main(args):
     
@@ -66,7 +78,9 @@ def main(args):
             args.chunk_size,
             args.chunk_overlap
         )
-
+    if args.action == 'query':
+        #TODO
+        pass
 
 if __name__=="__main__":
     def dir_path(string):
@@ -81,7 +95,7 @@ if __name__=="__main__":
     
     parser.add_argument(
         'action',
-        choices=['store', 'collection']
+        choices=['store', 'collection', 'query']
     )
     parser.add_argument(
         '-ls',

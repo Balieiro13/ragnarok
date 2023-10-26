@@ -13,21 +13,24 @@ class ChromaConfig:
     settings: Optional[Dict[str, Any]] = None
     embedding_fn_kwargs: Optional[Dict[str, Any]] = None
 
-    def __post_init__(self):
-        self.embedding_fn = SentenceTransformerEmbeddingFunction(
+    @property
+    def embedding_fn(self):
+        return SentenceTransformerEmbeddingFunction(
             **self.embedding_fn_kwargs
         )
-        
+
+    @property
+    def client(self):
         if self.settings:
             settings = Settings(**self.settings)
         else:
             settings = Settings()
 
         if self.host.startswith("https"):
-           self.client = HttpClient(host=self.host,
-                                    settings=settings,
-                                    ssl=True)
+           return HttpClient(host=self.host,
+                             settings=settings,
+                             ssl=True)
         else:
-            self.client = HttpClient(host=self.host,
-                                     port=self.port,
-                                     settings=settings)
+            return HttpClient(host=self.host,
+                              port=self.port,
+                              settings=settings)

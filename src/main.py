@@ -4,7 +4,7 @@ import argparse
 from dotenv import load_dotenv
 
 from chroma.config import ChromaConfig
-from chroma.service import ChromaService
+from chroma.repository import ChromaRepository
 from chain.setup import setup_chain, get_llm
 
 
@@ -38,8 +38,11 @@ def main(
             "normalize_embeddings": False
         }
     )
-    db_service = ChromaService(db_config)
-    context = db_service.query(collection_name, question, k=5)
+    db_repo = ChromaRepository(
+        client=db_config.client,
+        embedding_fn=db_config.embedding_fn
+    )
+    context = db_repo.query(collection_name, question, k=5)
 
     llm = get_llm(
         server_url=os.getenv("LLM_SERVER"),

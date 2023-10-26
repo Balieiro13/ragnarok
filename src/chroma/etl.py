@@ -6,6 +6,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 class ChromaETL:
+    # For now, this class only implements PyPDFDirectoryLoader and
+    # RecursiveCharacterTextSplitter objects. In the Future, it will
+    # be nice to have more flexibility with the implementation of
+    # others Loaders and Splitters objects (docx, html, markdown, etc)
 
     def __init__(self, collection):
         self.collection = collection

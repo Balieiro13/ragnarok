@@ -1,4 +1,5 @@
-from typing import List
+from typing import List, Dict, Optional
+from chromadb.api.types import Document
 
 from chromadb import HttpClient
 from chromadb.types import Collection
@@ -42,3 +43,19 @@ class ChromaRepository:
 
     def reset(self):
         self.client.reset()
+
+    def query(
+        self,
+        collection_name: str,
+        query: str,
+        k: int = 5,
+        filter: Optional[Dict[str, str]] = None,
+        where_document: Optional[Dict[str, str]] = None,
+    ) -> List[Document]:
+        collection = self.get_collection(collection_name)
+        return collection.query(
+            query_texts=[query],
+            n_results=k,
+            where=filter,
+            where_document=where_document,
+        )
