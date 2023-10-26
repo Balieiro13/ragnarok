@@ -22,7 +22,7 @@ class ChromaETL:
         )
         self.chunks = splitter.split_documents(self.documents)
     
-    def embed_data(self, collection_name: str) -> None:
+    def embed_data(self) -> None:
         for chunk in tqdm(self.chunks):
             self.collection.add(
                 ids=[str(uuid.uuid1())], 

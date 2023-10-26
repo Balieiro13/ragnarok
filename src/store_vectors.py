@@ -42,7 +42,7 @@ def main(
 
 
     print("Embedding data on the VectorStore...")
-    etl.embed_data(collection_name)
+    etl.embed_data()
 
 
 if __name__ == "__main__":
