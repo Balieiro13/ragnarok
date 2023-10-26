@@ -28,21 +28,20 @@ CLIENT = ChromaRepository(
     embedding_fn=DB_CONFIG.embedding_fn
 )
 
-
 @collection_app.command("ls")
 def list_collections():
     print(CLIENT.list_collections())
 
-@collection_app.command()
-def remove(collection_name: str) -> None:
+@collection_app.command("rm")
+def delete_collection(collection_name: str) -> None:
     print("Deleting collection...")
     CLIENT.delete_collection(collection_name)
     print("Done!")
 
 @collection_app.command()
 def query(
-    collection_name: str,
     query: str,
+    collection_name: str = "default",
     k: int = 5,
 ) -> None:
     response = CLIENT.query(collection_name, query, k)
@@ -51,7 +50,7 @@ def query(
 @app.command("store")
 def store_vectors(
     path: str,
-    name: str = "default",
+    collection_name: str = "default",
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
