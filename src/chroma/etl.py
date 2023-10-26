@@ -10,7 +10,7 @@ class ChromaETL:
     def __init__(self, collection):
         self.collection = collection
 
-    def load_data(self, filepath: str) -> None:
+    def extract_data(self, filepath: str) -> None:
         loader = PyPDFDirectoryLoader(filepath)
         self.documents = loader.load()
     

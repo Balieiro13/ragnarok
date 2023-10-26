@@ -36,7 +36,7 @@ def main(
     etl = ChromaETL(collection)
 
     print("Loading data from directory...")
-    etl.load_data(dir_path)
+    etl.extract_data(dir_path)
     etl.split_text(chunk_size=chunk_size, 
                   chunk_overlap=chunk_overlap)
 
