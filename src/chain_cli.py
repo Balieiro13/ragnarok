@@ -1,5 +1,5 @@
 import os
-import argparse
+import typer
 
 from dotenv import load_dotenv
 
@@ -11,9 +11,9 @@ from chain.setup import setup_chain, get_llm
 load_dotenv()
 
 def main(
-    question:str,
-    collection_name:str,
-    verbose=False, 
+    question: str,
+    collection_name :str = 'default',
+    verbose: bool =False, 
     ) -> None:
 
     default_template = '''
@@ -60,29 +60,4 @@ def main(
     print(response)
 
 if __name__=="__main__":
-    parser = argparse.ArgumentParser(
-                    prog='question',
-                    description='Responds a given question using Llama2 and RAG technique'
-    )
-    parser.add_argument(
-        'question',
-        type=str,
-    )
-    parser.add_argument(
-        '-c', 
-        '--collection',
-        type=str, 
-        default="default"
-    )
-    parser.add_argument(
-        '-v', 
-        '--verbose', 
-        action='store_true'
-    )
-    args = parser.parse_args()
-
-    main(
-        question=args.question,
-        collection_name=args.collection,
-        verbose=args.verbose,
-    ) 
+    typer.run(main)

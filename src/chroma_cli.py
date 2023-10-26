@@ -1,7 +1,6 @@
 import os
 import typer
 from dotenv import load_dotenv
-from typing import Dict, Optional
 
 from chroma.config import ChromaConfig
 from chroma.repository import ChromaRepository
