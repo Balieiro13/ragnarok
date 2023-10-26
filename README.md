@@ -1,6 +1,6 @@
 # RAG App
 
-Por enquanto, a imagem do llama2 quantisado foi gerada localmente atravéz do `openllm` e do `bentoml`. É preciso estudar como configurar um `bentofile.yaml` para gerar a imagem docker do modelo e facilmente rodar este código. Desta forma, estou expondo uma API com o llama2, disponível em `https://abps.ink/llm`
+Por enquanto, a imagem do llama2 quantisado foi gerada localmente através do `openllm` e do `bentoml`. É preciso estudar como configurar um `bentofile.yaml` para gerar a imagem docker do modelo e facilmente rodar este código. Desta forma, estou expondo uma API com o llama2, disponível em `https://abps.ink/llm`
 
 Sugiro criar um virtual environment antes de começar este projeto:
 ```
