@@ -26,6 +26,10 @@ class ChromaRepository:
             embedding_function=self.embedding_function 
         )
 
+    def update_collection(self, collection_name: str) -> None:
+        #TODO
+        pass
+    
     def delete_collection(self, collection_name: str) -> None:
         self.client.delete_collection(
             name=collection_name

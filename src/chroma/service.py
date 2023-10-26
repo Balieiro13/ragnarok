@@ -31,6 +31,3 @@ class ChromaService:
             where=filter,
             where_document=where_document,
         )
-
-    def reset(self) -> None:
-        self.croma_repo.reset_chroma()
