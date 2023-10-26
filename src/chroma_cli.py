@@ -54,7 +54,7 @@ def store_vectors(
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
-    collection = CLIENT.get_or_create_collection(name)
+    collection = CLIENT.get_or_create_collection(collection_name)
     etl = ChromaETL(collection)
 
     print("Loading data from directory...")
