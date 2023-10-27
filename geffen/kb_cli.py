@@ -1,10 +1,12 @@
 import os
 import typer
 from dotenv import load_dotenv
+from typing_extensions import Annotated
 
-from chroma.config import ChromaConfig
-from chroma.repository import ChromaRepository
-from chroma.etl import ChromaETL
+
+from knowledge_base.config import KBConfig
+from knowledge_base.repository import KBRepository
+from knowledge_base.etl import KBETL
 
 load_dotenv()
 
@@ -13,7 +15,7 @@ collection_app = typer.Typer()
 app.add_typer(collection_app, name="collection")
 
 
-DB_CONFIG = ChromaConfig(
+DB_CONFIG = KBConfig(
     host=os.getenv("DB_HOST"),
     port=os.getenv("DB_PORT"),
     embedding_fn_kwargs={
@@ -23,7 +25,7 @@ DB_CONFIG = ChromaConfig(
     }
 )
 
-CLIENT = ChromaRepository(
+CLIENT = KBRepository(
     client=DB_CONFIG.client,
     embedding_fn=DB_CONFIG.embedding_fn
 )
@@ -55,7 +57,7 @@ def store_vectors(
     chunk_overlap: int = 20, 
 ) -> None:
     collection = CLIENT.get_or_create_collection(collection_name)
-    etl = ChromaETL(collection)
+    etl = KBETL(collection)
 
     print("Loading data from directory...")
     etl.extract_data(path)
@@ -65,6 +67,17 @@ def store_vectors(
     print("Embedding data on the VectorStore...")
     etl.embed_data()
     print("Done!")   
+
+@app.command("reset")
+def reset_chroma(
+    force: Annotated[
+        bool, typer.Option(prompt="Are you sure you want to delete the user?")
+    ],
+):
+    print("Reseting database...")
+    CLIENT.reset()
+    print("Done!")   
+    
 
 if __name__ == "__main__":
     app()

@@ -5,7 +5,7 @@ from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-class ChromaETL:
+class KBETL:
     # For now, this class has only implemented PyPDFDirectoryLoader and
     # RecursiveCharacterTextSplitter objects. In the Future, it would
     # be nice to have more flexibility with the implementation of

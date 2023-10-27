@@ -4,7 +4,7 @@ import typer
 from dotenv import load_dotenv
 from langchain.vectorstores.chroma import Chroma
 
-from chroma.config import ChromaConfig
+from knowledge_base.config import KBConfig
 from chain.setup import llm_chain, get_llm, runnable_chain
 
 
@@ -31,7 +31,7 @@ def main(
 
     Helpful answer: 
     '''
-    db_config = ChromaConfig(
+    db_config = KBConfig(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
         embedding_fn_kwargs={

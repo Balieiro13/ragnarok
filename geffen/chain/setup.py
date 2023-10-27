@@ -3,7 +3,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
 from langchain.chains import LLMChain
 from langchain.schema import StrOutputParser
-from langchain.schema.runnable import RunnablePassthrough, RunnableParallel
+from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.retriever import BaseRetriever
 
 def openai_llm(openai_key: str, **kwargs) -> OpenAI:
