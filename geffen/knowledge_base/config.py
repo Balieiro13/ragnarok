@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from chromadb import HttpClient, Documents, Embeddings
 from chromadb.config import Settings
 
-from knowledge_base.embeddings.sentece_transformers import SentenceTransformerEmbeddingFunction
+from knowledge_base.embeddings.sentence_transformers import SentenceTransformerEmbeddingFunction
 
 
 @dataclass

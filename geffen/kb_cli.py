@@ -71,12 +71,16 @@ def store_vectors(
 @app.command("reset")
 def reset_chroma(
     force: Annotated[
-        bool, typer.Option(prompt="Are you sure you want to delete the user?")
+        bool, typer.Option(prompt="Are you sure you want to reset the database?")
     ],
-):
-    print("Reseting database...")
-    CLIENT.reset()
-    print("Done!")   
+) -> None:
+    
+    if force:
+        print("Reseting database...")
+        CLIENT.reset()
+        print("Done!")   
+    else:
+        print("Operation cancelled")
     
 
 if __name__ == "__main__":
