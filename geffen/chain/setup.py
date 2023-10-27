@@ -1,4 +1,4 @@
-from langchain.llms import OpenLLM, OpenAI
+from langchain.llms.openllm import OpenLLM
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
 from langchain.chains import LLMChain
@@ -6,8 +6,8 @@ from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.retriever import BaseRetriever
 
-def openai_llm(openai_key: str, **kwargs) -> OpenAI:
-    llm = OpenAI(temperature=0.5)
+def openai_llm(openai_key: str, **kwargs) -> ChatOpenAI:
+    llm = ChatOpenAI(temperature=0.3, **kwargs)
     return llm
     
     

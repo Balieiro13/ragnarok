@@ -1,11 +1,12 @@
 import os
 import typer
-
 from dotenv import load_dotenv
+
 from langchain.vectorstores.chroma import Chroma
+from typing_extensions import Annotated
 
 from knowledge_base.config import KBConfig
-from chain.setup import llm_chain, get_llm, runnable_chain
+from chain.setup import get_llm, runnable_chain
 
 
 load_dotenv()
@@ -14,7 +15,7 @@ load_dotenv()
 # @app.command()
 def main(
     question: str,
-    collection_name :str = 'default',
+    collection_name: Annotated[str, typer.Argument(envvar="COLLECTION_NAME")] = "default",
     instruction: str = '',
     k: int = 5,
     verbose: bool =False, 
@@ -23,7 +24,7 @@ def main(
 
     default_template = '''
     You are an assistant that answers a request based on the following context.
-    If you don't know the answer, just say that you don't know. 
+    Think about the informations that the context give and give the most helpful aswer.
 
     Context: {context}
 
@@ -43,17 +44,21 @@ def main(
     retriever = Chroma(
         client=db_config.client,
         collection_name=collection_name,
-        embedding_function=db_config.embedding_fn
-    ).as_retriever()
+        embedding_function=db_config.embedding_fn,
+    ).as_retriever(
+        search_type="mmr",
+        search_kwargs={'k': 10, 'fetch_k': 50}
+    )
 
     if model == 'openllm':
         llm = get_llm(
             llm_type="openllm",
             server_url=os.getenv("LLM_SERVER"),
-            max_new_tokens=256,
+            use_llama2_prompt=False,
+            max_new_tokens=2048,
             do_sample=True,
-            temperature=0.5,
-            top_p=0.95,
+            temperature=0.3,
+            top_p=0.98,
             top_k=15,
         )
     if model == 'openai':
@@ -62,15 +67,6 @@ def main(
             model_name=os.getenv("OPENAI_API_MODEL"),
             openai_key=os.getenv("OPENAI_API_KEY")
         )
-
-    # context = retriever.get_relevant_documents(query=question)
-
-    # chain = llm_chain(template=default_template, 
-    #                     llm=llm, verbose=verbose)
-
-    # response = chain.run(context=context, #["documents"], 
-    #                      question=question, 
-    #                      instructions=instruction)
 
     chain = runnable_chain(llm, default_template, retriever)
     response = chain.invoke(question)

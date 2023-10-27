@@ -40,19 +40,19 @@ def delete_collection(collection_name: str) -> None:
     CLIENT.delete_collection(collection_name)
     print("Done!")
 
-@collection_app.command()
+@app.command()
 def query(
     query: str,
-    collection_name: str = "default",
-    k: int = 5,
+    collection_name: Annotated[str, typer.Argument(envvar="COLLECTION_NAME")] = "default",
+    top_k: int = 5,
 ) -> None:
-    response = CLIENT.query(collection_name, query, k)
+    response = CLIENT.query(collection_name, query, top_k)
     print(response)
 
 @app.command("store")
 def store_vectors(
     path: str,
-    collection_name: str = "default",
+    collection_name: Annotated[str, typer.Argument(envvar="COLLECTION_NAME")] = "default",
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
