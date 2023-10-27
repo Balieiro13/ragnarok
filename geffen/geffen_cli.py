@@ -19,12 +19,12 @@ def main(
     instruction: str = '',
     k: int = 5,
     verbose: bool =False, 
-    model: str = 'openllm'
+    openai: bool = False
 ) -> None:
 
     default_template = '''
     You are an assistant that answers a request based on the following context.
-    Think about the informations that the context give and give the most helpful aswer.
+    Think about the informations that the context gives and return the most helpful aswer.
 
     Context: {context}
 
@@ -50,7 +50,13 @@ def main(
         search_kwargs={'k': 10, 'fetch_k': 50}
     )
 
-    if model == 'openllm':
+    if openai:
+        llm = get_llm(
+            "openai", 
+            model_name=os.getenv("OPENAI_API_MODEL"),
+            openai_key=os.getenv("OPENAI_API_KEY")
+        )
+    else:
         llm = get_llm(
             llm_type="openllm",
             server_url=os.getenv("LLM_SERVER"),
@@ -60,12 +66,6 @@ def main(
             temperature=0.3,
             top_p=0.98,
             top_k=15,
-        )
-    if model == 'openai':
-        llm = get_llm(
-            "openai", 
-            model_name=os.getenv("OPENAI_API_MODEL"),
-            openai_key=os.getenv("OPENAI_API_KEY")
         )
 
     chain = runnable_chain(llm, default_template, retriever)

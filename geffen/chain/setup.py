@@ -7,7 +7,7 @@ from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.retriever import BaseRetriever
 
 def openai_llm(openai_key: str, **kwargs) -> ChatOpenAI:
-    llm = ChatOpenAI(temperature=0.3, **kwargs)
+    llm = ChatOpenAI(temperature=0.6, **kwargs)
     return llm
     
     

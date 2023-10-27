@@ -52,7 +52,7 @@ def query(
 @app.command("store")
 def store_vectors(
     path: str,
-    collection_name: Annotated[str, typer.Argument(envvar="COLLECTION_NAME")] = "default",
+    collection_name: str = "default",
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
