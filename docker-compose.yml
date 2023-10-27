@@ -9,6 +9,17 @@ services:
       - ALLOW_RESET=True
     ports:
       - 8000:8000
+  llama:
+    image: tb-llama2-7b-gptq
+    ports:
+      - 3000:3000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
 volumes:
   backups:

@@ -1,9 +1,26 @@
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 
-from chromadb import HttpClient
+from chromadb import HttpClient, Documents, Embeddings
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 from chromadb.config import Settings
+
+
+class CustomEmbeddingFn(SentenceTransformerEmbeddingFunction):
+    '''For some reason, langchain embeddings needs to
+    implement two functions: embed_documents() and embed_query(). 
+    This is incompatible with chromadb embeddings, which implements
+    a __call()__ class method. For that reason, i create this
+    wrapper of the chroma embeddings and implements the two necessary
+    functions that langchain needs. Now i can use this class in both frameworks
+    '''
+    
+    def embed_documents(self, docs: Documents) -> Embeddings:
+        return super().__call__(docs)
+    
+    def embed_query(self, query: str) -> List[float]:
+        embed_query = super().__call__([query])
+        return embed_query[0]
 
 
 @dataclass
@@ -15,7 +32,7 @@ class ChromaConfig:
 
     @property
     def embedding_fn(self):
-        return SentenceTransformerEmbeddingFunction(
+        return CustomEmbeddingFn(
             **self.embedding_fn_kwargs
         )
 
