@@ -15,15 +15,15 @@ load_dotenv()
 # @app.command()
 def main(
     question: str,
-    collection_name: Annotated[str, typer.Argument(envvar="COLLECTION_NAME")] = "default",
-    instruction: str = '',
+    collection_name: str = "pf2e",
     k: int = 5,
     verbose: bool =False, 
-    openai: bool = False
+    openai: bool = False,
+    openllm: bool = False
 ) -> None:
 
     default_template = '''
-    You are an assistant that answers a request based on the following context.
+    You are the PathFinder's DM assistant that answers a request based on the following context.
     Think about the informations that the context gives and return the most helpful aswer.
 
     Context: {context}
@@ -47,7 +47,7 @@ def main(
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",
-        search_kwargs={'k': 10, 'fetch_k': 50}
+        search_kwargs={'k': k, 'fetch_k': 30}
     )
 
     if openai:
@@ -56,17 +56,42 @@ def main(
             model_name=os.getenv("OPENAI_API_MODEL"),
             openai_key=os.getenv("OPENAI_API_KEY")
         )
-    else:
+    elif openllm:
+        llm_kwargs = {
+            "use_llama2_prompt": False,
+            "max_new_tokens":2048,
+            "do_sample":True,
+            "temperature":0.6,
+            "top_p":0.98,
+            "top_k":15,
+
+        }
         llm = get_llm(
             llm_type="openllm",
             server_url=os.getenv("LLM_SERVER"),
-            use_llama2_prompt=False,
-            max_new_tokens=2048,
-            do_sample=True,
-            temperature=0.3,
-            top_p=0.98,
-            top_k=15,
+            llm_kwargs=llm_kwargs
         )
+
+    else:
+        llm = get_llm(
+            "hf",
+            model_name_or_path=os.getenv("HF_MODEL"),
+            model_kwargs={
+                "device_map":"cuda",
+                "trust_remote_code":False, 
+                "revision":"main"
+            },
+            pipe_kwargs={
+                "max_new_tokens":256,
+                "do_sample":True,
+                "temperature":0.4,
+                "top_p":0.95,
+                "top_k":20,
+                "repetition_penalty":1.1
+                
+            }
+        )
+        
 
     chain = runnable_chain(llm, default_template, retriever)
     response = chain.invoke(question)
