@@ -13,3 +13,9 @@ Documents = List[Document]
 class EmbeddingFunction(Protocol):
     def __call__(self, texts: Documents) -> Embeddings:
         ...
+    
+    def embed_documents(self, docs: Documents) -> Embeddings:
+        ...
+
+    def embed_query(self, query: str) -> List[float]:
+        ...

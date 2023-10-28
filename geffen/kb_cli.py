@@ -6,7 +6,8 @@ from typing_extensions import Annotated
 
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
-from knowledge_base.etl import KBETL
+from knowledge_base.etl.types import KBETL
+from knowledge_base.etl.recursive import KBRecursive
 
 load_dotenv()
 
@@ -21,7 +22,8 @@ DB_CONFIG = KBConfig(
     embedding_fn_kwargs={
         "model_name": os.getenv("EMBEDDING_MODEL_NAME"),
         "device": os.getenv("EMBEDDING_DEVICE"),
-        "normalize_embeddings": False
+        "normalize_embeddings": False,
+        "show_progress_bar": True
     }
 )
 
@@ -43,29 +45,35 @@ def delete_collection(collection_name: str) -> None:
 @app.command()
 def query(
     query: str,
-    collection_name: Annotated[str, typer.Argument(envvar="COLLECTION_NAME")] = "default",
+    cn: str = "default",
     top_k: int = 5,
 ) -> None:
-    response = CLIENT.query(collection_name, query, top_k)
+    response = CLIENT.query(cn, query, top_k)
     print(response)
 
 @app.command("store")
 def store_vectors(
     path: str,
-    collection_name: str = "default",
+    cn: str = "default",
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
-    collection = CLIENT.get_or_create_collection(collection_name)
-    etl = KBETL(collection)
+    collection = CLIENT.get_or_create_collection(cn)
+    etl: KBETL = KBRecursive(collection)
 
     print("Loading data from directory...")
     etl.extract_data(path)
-    etl.split_text(chunk_size=chunk_size, 
-                   chunk_overlap=chunk_overlap)
 
-    print("Embedding data on the VectorStore...")
-    etl.embed_data()
+    print("Spliting data in Chunks...")
+    etl.split_in_chunks(chunk_size=chunk_size, 
+                        chunk_overlap=chunk_overlap)
+
+    print("Embedding chunks...")
+    etl.embed_data(embedding_fn=DB_CONFIG.embedding_fn)
+
+    print("Loading data into VectorStore...")
+    etl.load_data()
+
     print("Done!")   
 
 @app.command("reset")

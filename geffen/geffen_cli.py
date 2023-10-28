@@ -15,7 +15,7 @@ load_dotenv()
 # @app.command()
 def main(
     question: str,
-    collection_name: str = "pf2e",
+    cn: str = "pf2e",
     k: int = 5,
     verbose: bool =False, 
     openai: bool = False,
@@ -23,7 +23,7 @@ def main(
 ) -> None:
 
     default_template = '''
-    You are the PathFinder's DM assistant that answers a request based on the following context.
+    You are an assistant that answers a request based on the following context.
     Think about the informations that the context gives and return the most helpful aswer.
 
     Context: {context}
@@ -43,16 +43,17 @@ def main(
     )
     retriever = Chroma(
         client=db_config.client,
-        collection_name=collection_name,
+        collection_name=cn,
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",
-        search_kwargs={'k': k, 'fetch_k': 30}
+        search_kwargs={'k': k, 'fetch_k': 40}
     )
 
     if openai:
         llm = get_llm(
             "openai", 
+            temperature=0.6,
             model_name=os.getenv("OPENAI_API_MODEL"),
             openai_key=os.getenv("OPENAI_API_KEY")
         )

@@ -13,7 +13,10 @@ class SentenceTransformerEmbeddingFunction(EmbeddingFunction):
         model_name: str = "all-MiniLM-L6-v2",
         device: str = "cpu",
         normalize_embeddings: bool = False,
+        show_progress_bar: bool = False,
     ):
+        self._verbose = show_progress_bar
+
         if model_name not in self.models:
             try:
                 from sentence_transformers import SentenceTransformer
@@ -28,6 +31,7 @@ class SentenceTransformerEmbeddingFunction(EmbeddingFunction):
     def __call__(self, texts: Documents) -> Embeddings:
         return self._model.encode(  # type: ignore
             list(texts),
+            show_progress_bar=self._verbose,
             convert_to_numpy=True,
             normalize_embeddings=self._normalize_embeddings,
         ).tolist()

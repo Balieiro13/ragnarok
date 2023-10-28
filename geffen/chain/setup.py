@@ -16,7 +16,7 @@ def setup_prompt(template):
 
 
 def openai_llm(openai_key: str, **kwargs) -> ChatOpenAI:
-    llm = ChatOpenAI(temperature=0.6, **kwargs)
+    llm = ChatOpenAI(**kwargs)
     return llm
     
 def openllm(server_url:str, **llm_kwargs) -> OpenLLM:
