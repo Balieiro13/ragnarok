@@ -16,10 +16,11 @@ load_dotenv()
 def main(
     question: str,
     cn: str = "pf2e",
-    k: int = 5,
+    k: int = 10,
+    temp: float = 0.4,
     verbose: bool =False, 
     openai: bool = False,
-    openllm: bool = False
+    openllm: bool = False,
 ) -> None:
 
     default_template = '''
@@ -41,6 +42,9 @@ def main(
             "normalize_embeddings": False
         }
     )
+
+    MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS"))
+    
     retriever = Chroma(
         client=db_config.client,
         collection_name=cn,
@@ -53,16 +57,16 @@ def main(
     if openai:
         llm = get_llm(
             "openai", 
-            temperature=0.3,
+            temperature=temp,
             model_name=os.getenv("OPENAI_API_MODEL"),
             openai_key=os.getenv("OPENAI_API_KEY")
         )
     elif openllm:
         llm_kwargs = {
             "use_llama2_prompt": False,
-            "max_new_tokens":256,
+            "max_new_tokens":MAX_NEW_TOKENS,
             "do_sample":True,
-            "temperature":0.6,
+            "temperature":temp,
             "top_p":0.98,
             "top_k":15,
 
@@ -83,11 +87,11 @@ def main(
                 "revision":"main"
             },
             pipe_kwargs={
-                "max_new_tokens":512,
+                "max_new_tokens":MAX_NEW_TOKENS,
                 "do_sample":True,
-                "temperature":0.3,
+                "temperature":temp,
                 "top_p":0.95,
-                "top_k":10,
+                "top_k":15,
                 "repetition_penalty":1.1
                 
             }
