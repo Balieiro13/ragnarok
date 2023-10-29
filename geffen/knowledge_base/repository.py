@@ -5,7 +5,7 @@ from chromadb import HttpClient
 from chromadb.types import Collection
 
 
-class ChromaRepository:
+class KBRepository:
     
     def __init__(self, client: HttpClient, embedding_fn) -> None:
         self.client = client

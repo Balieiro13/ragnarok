@@ -1,13 +1,14 @@
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 
-from chromadb import HttpClient
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from chromadb import HttpClient, Documents, Embeddings
 from chromadb.config import Settings
+
+from knowledge_base.embeddings.sentence_transformers import SentenceTransformerEmbeddingFunction
 
 
 @dataclass
-class ChromaConfig:
+class KBConfig:
     host: str
     port: Optional[int] = None 
     settings: Optional[Dict[str, Any]] = None
