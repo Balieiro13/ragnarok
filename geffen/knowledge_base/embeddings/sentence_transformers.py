@@ -29,7 +29,7 @@ class SentenceTransformerEmbeddingFunction(EmbeddingFunction):
         self._normalize_embeddings = normalize_embeddings
 
     def __call__(self, texts: Documents) -> Embeddings:
-        return self._model.encode(  # type: ignore
+        return self._model.encode(
             list(texts),
             show_progress_bar=self._verbose,
             convert_to_numpy=True,

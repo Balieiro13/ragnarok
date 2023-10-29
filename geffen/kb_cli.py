@@ -3,10 +3,9 @@ import typer
 from dotenv import load_dotenv
 from typing_extensions import Annotated
 
-
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
-from knowledge_base.etl.types import KBETL
+from knowledge_base.etl.base import KBETL
 from knowledge_base.etl.recursive import KBRecursive
 
 load_dotenv()
@@ -46,9 +45,9 @@ def delete_collection(collection_name: str) -> None:
 def query(
     query: str,
     cn: str = "default",
-    top_k: int = 5,
+    k: int = 5,
 ) -> None:
-    response = CLIENT.query(cn, query, top_k)
+    response = CLIENT.query(cn, query, k)
     print(response)
 
 @app.command("store")

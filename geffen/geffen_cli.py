@@ -47,20 +47,20 @@ def main(
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",
-        search_kwargs={'k': k, 'fetch_k': 40}
+        search_kwargs={'k': k, 'fetch_k': 50, 'lambda_mult': 0.85}
     )
 
     if openai:
         llm = get_llm(
             "openai", 
-            temperature=0.6,
+            temperature=0.3,
             model_name=os.getenv("OPENAI_API_MODEL"),
             openai_key=os.getenv("OPENAI_API_KEY")
         )
     elif openllm:
         llm_kwargs = {
             "use_llama2_prompt": False,
-            "max_new_tokens":2048,
+            "max_new_tokens":256,
             "do_sample":True,
             "temperature":0.6,
             "top_p":0.98,
@@ -83,11 +83,11 @@ def main(
                 "revision":"main"
             },
             pipe_kwargs={
-                "max_new_tokens":256,
+                "max_new_tokens":512,
                 "do_sample":True,
-                "temperature":0.4,
+                "temperature":0.3,
                 "top_p":0.95,
-                "top_k":20,
+                "top_k":10,
                 "repetition_penalty":1.1
                 
             }
