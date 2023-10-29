@@ -25,12 +25,12 @@ $ docker-compose up -d
 
 Assumindo que vc esteja no diretório raíz deste projeto, para indexar documentos no db, rode o seguinte comando:
 ```
-$ python src/chroma_cli.py store /path/to/documents/directory --collection-name "nome_da_coleção"
+$ python src/chroma_cli.py store /path/to/documents/directory --cn "nome_da_coleção"
 ```
 
 ## Conversando com os documentos:
 Para fazer perguntas aos seus documentos indexados, rode
 ```
-$ python src/chain_cli.py "Escreva sua pergunta." --collection-name "nome_da_coleção"
+$ python src/chain_cli.py "Escreva sua pergunta." --cn "nome_da_coleção"
 ```
 Você pode adicionar um `--verbose` para ver todo o prompt gerado pela sua pergunta e seus documentos indexados.
