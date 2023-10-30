@@ -25,6 +25,8 @@ def openllm(server_url:str, **llm_kwargs) -> OpenLLM:
 
 def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline:
     import warnings
+    from auto_gptq import exllama_set_max_input_length
+
     warnings.filterwarnings("ignore")
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -35,6 +37,8 @@ def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline
         model_name_or_path,
         **model_kwargs
     )
+
+    model = exllama_set_max_input_length(model, 4096)
     pipe = pipeline(
         "text-generation",
         model=model,

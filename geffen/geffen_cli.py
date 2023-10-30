@@ -15,9 +15,9 @@ load_dotenv()
 # @app.command()
 def main(
     question: str,
-    cn: str = "pf2e",
+    cn: str = "dnd",
     k: int = 10,
-    temp: float = 0.4,
+    temp: float = 0.8,
     verbose: bool =False, 
     openai: bool = False,
     openllm: bool = False,
@@ -51,7 +51,7 @@ def main(
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",
-        search_kwargs={'k': k, 'fetch_k': 50, 'lambda_mult': 0.85}
+        search_kwargs={'k': k, 'fetch_k': int(2*k), 'lambda_mult': 0.75}
     )
 
     if openai:

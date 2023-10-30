@@ -10,7 +10,7 @@ class SentenceTransformerEmbeddingFunction(EmbeddingFunction):
     # for a full list of options: https://huggingface.co/sentence-transformers, https://www.sbert.net/docs/pretrained_models.html
     def __init__(
         self,
-        model_name: str = "all-MiniLM-L6-v2",
+        model_name: str = "BAAI/bge-large-en-v1.5",
         device: str = "cpu",
         normalize_embeddings: bool = False,
         show_progress_bar: bool = False,
