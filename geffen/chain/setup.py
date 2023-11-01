@@ -1,4 +1,5 @@
 from langchain.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain.llms.huggingface_text_gen_inference import HuggingFaceTextGenInference
 from langchain.llms.openllm import OpenLLM
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
@@ -43,6 +44,12 @@ def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline
     )
 
     llm = HuggingFacePipeline(pipeline=pipe)
+    return llm
+
+def hftgi_llm(**kwargs) -> HuggingFaceTextGenInference:
+    llm = HuggingFaceTextGenInference(
+        **kwargs
+    )
     return llm
 
 def get_llm(llm_type, **llm_kwargs) -> OpenLLM:

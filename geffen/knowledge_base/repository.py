@@ -4,10 +4,12 @@ from chromadb.api.types import Document
 from chromadb import HttpClient
 from chromadb.types import Collection
 
+from knowledge_base.embeddings.types import EmbeddingFunction
+
 
 class KBRepository:
     
-    def __init__(self, client: HttpClient, embedding_fn) -> None:
+    def __init__(self, client: HttpClient, embedding_fn: EmbeddingFunction) -> None:
         self.client = client
         self.embedding_function = embedding_fn
 

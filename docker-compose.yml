@@ -9,6 +9,7 @@ services:
       - ALLOW_RESET=True
     ports:
       - 8000:8000
+    restart: always
 
 volumes:
   backups:
