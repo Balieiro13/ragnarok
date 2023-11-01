@@ -4,7 +4,6 @@ from tqdm import tqdm
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-from knowledge_base.embeddings.sentence_transformers import SentenceTransformerEmbeddingFunction
 from knowledge_base.embeddings.types import Documents, Embeddings, EmbeddingFunction
 from knowledge_base.etl.base import KBETL
 

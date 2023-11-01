@@ -7,6 +7,7 @@ from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
 from knowledge_base.etl.base import KBETL
 from knowledge_base.etl.recursive import KBRecursive
+from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
 
 load_dotenv()
 
@@ -18,12 +19,7 @@ app.add_typer(collection_app, name="collection")
 DB_CONFIG = KBConfig(
     host=os.getenv("DB_HOST"),
     port=os.getenv("DB_PORT"),
-    embedding_fn_kwargs={
-        "model_name": os.getenv("EMBEDDING_MODEL_NAME"),
-        "device": os.getenv("EMBEDDING_DEVICE"),
-        "normalize_embeddings": False,
-        "show_progress_bar": True
-    }
+    embedding_fn=HFTEIEmbeddingFunction()
 )
 
 CLIENT = KBRepository(

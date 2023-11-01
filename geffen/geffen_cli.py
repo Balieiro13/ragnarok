@@ -6,7 +6,8 @@ from langchain.vectorstores.chroma import Chroma
 from typing_extensions import Annotated
 
 from knowledge_base.config import KBConfig
-from chain.setup import get_llm, runnable_chain
+from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
+from chain.setup import get_llm, runnable_chain, hftgi_llm
 
 
 load_dotenv()
@@ -36,11 +37,7 @@ def main(
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
-        embedding_fn_kwargs={
-            "model_name": os.getenv("EMBEDDING_MODEL_NAME"),
-            "device": os.getenv("EMBEDDING_DEVICE"),
-            "normalize_embeddings": False
-        }
+        embedding_fn=HFTEIEmbeddingFunction()
     )
 
     MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS"))
@@ -78,25 +75,33 @@ def main(
         )
 
     else:
-        llm = get_llm(
-            "hf",
-            model_name_or_path=os.getenv("HF_MODEL"),
-            model_kwargs={
-                "device_map":"cuda",
-                "trust_remote_code":False, 
-                "revision":"main"
-            },
-            pipe_kwargs={
-                "max_new_tokens":MAX_NEW_TOKENS,
-                "do_sample":True,
-                "temperature":temp,
-                "top_p":0.95,
-                "top_k":15,
-                "repetition_penalty":1.1
-                
-            }
+        # llm = get_llm(
+        #     "hf",
+        #     model_name_or_path=os.getenv("HF_MODEL"),
+        #     model_kwargs={
+        #         "device_map":"cuda",
+        #         "trust_remote_code":False, 
+        #         "revision":"main"
+        #     },
+        #     pipe_kwargs={
+        #         "max_new_tokens":MAX_NEW_TOKENS,
+        #         "do_sample":True,
+        #         "temperature":temp,
+        #         "top_p":0.95,
+        #         "top_k":15,
+        #         "repetition_penalty":1.1
+        #         
+        #     }
+        # )
+        llm = hftgi_llm(
+            inference_server_url="http://localhost:8080/",
+            max_new_tokens=512,
+            do_sample=True,
+            top_k=15,
+            top_p=0.95,
+            temperature=temp,
+            repetition_penalty=1.1
         )
-        
 
     chain = runnable_chain(llm, default_template, retriever)
     response = chain.invoke(question)

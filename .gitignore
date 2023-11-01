@@ -2,4 +2,4 @@
 .venv
 .local*
 .rag
-.*env
+.env

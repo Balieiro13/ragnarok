@@ -42,3 +42,35 @@ class SentenceTransformerEmbeddingFunction(EmbeddingFunction):
     def embed_query(self, query: str) -> List[float]:
         embed_query = self.__call__([query])
         return embed_query[0]
+
+class HFTEIEmbeddingFunction(EmbeddingFunction):
+    # Since we do dynamic imports we have to type this as Any
+    def __init__(
+        self,
+        model_server: str = "http://localhost:8081/embed"
+    ):
+        import requests
+
+        self._url = model_server
+        self._session = requests.Session()
+
+
+    def __call__(self, texts: Documents) -> Embeddings:
+        def divide_chunks(chunk_size: int = 32):
+            for i in range(0, len(texts), chunk_size):
+                yield texts[i:i+chunk_size]
+        
+        embeddings = list()
+        for chunk in divide_chunks():
+            embeddings += (self._session.post(
+                self._url, json={"inputs": chunk}
+            ).json())
+
+        return embeddings
+    
+    def embed_documents(self, docs: Documents) -> Embeddings:
+        return self.__call__(docs)
+    
+    def embed_query(self, query: str) -> List[float]:
+        embed_query = self.__call__([query])
+        return embed_query[0]
