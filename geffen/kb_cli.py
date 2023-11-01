@@ -19,7 +19,9 @@ app.add_typer(collection_app, name="collection")
 DB_CONFIG = KBConfig(
     host=os.getenv("DB_HOST"),
     port=os.getenv("DB_PORT"),
-    embedding_fn=HFTEIEmbeddingFunction()
+    embedding_fn=HFTEIEmbeddingFunction(
+        os.getenv("EMBEDDING_FN_SERVER")
+    )
 )
 
 CLIENT = KBRepository(
