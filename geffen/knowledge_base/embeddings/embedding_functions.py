@@ -1,3 +1,4 @@
+from tqdm import tqdm
 from typing import Dict, Any, List
 
 from knowledge_base.embeddings.types import EmbeddingFunction, Documents, Embeddings
@@ -16,14 +17,12 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
 
 
     def __call__(self, texts: Documents) -> Embeddings:
-        def divide_chunks(chunk_size: int = 32):
-            for i in range(0, len(texts), chunk_size):
-                yield texts[i:i+chunk_size]
-
+        chunk_size: int = 32
         embeddings = list()
-        for chunk in divide_chunks():
+
+        for i in tqdm(range(0, len(texts), chunk_size)):
             embeddings += (self._session.post(
-                self._url, json={"inputs": chunk}
+                self._url, json={"inputs": texts[i:i+chunk_size]}
             ).json())
 
         return embeddings

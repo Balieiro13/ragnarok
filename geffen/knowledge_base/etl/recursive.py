@@ -1,5 +1,4 @@
 import uuid
-from tqdm import tqdm
 
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -27,7 +26,7 @@ class KBRecursive(KBETL):
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap
         )
-        self.chunks = splitter.split_documents(tqdm(self.documents))
+        self.chunks = splitter.split_documents(self.documents)
         self.chunks_content = [chunk.page_content for chunk in self.chunks]
         self.chunks_metadata = [chunk.metadata for chunk in self.chunks]
     
