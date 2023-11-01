@@ -47,7 +47,7 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
     # Since we do dynamic imports we have to type this as Any
     def __init__(
         self,
-        model_server: str = "http://localhost:8081/embed"
+        model_server: str
     ):
         import requests
 

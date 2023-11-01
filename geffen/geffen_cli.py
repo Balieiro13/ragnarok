@@ -37,7 +37,9 @@ def main(
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
-        embedding_fn=HFTEIEmbeddingFunction()
+        embedding_fn=HFTEIEmbeddingFunction(
+            os.getenv("EMBEDDING_FN_SERVER")
+        )
     )
 
     MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS"))
@@ -51,57 +53,10 @@ def main(
         search_kwargs={'k': k, 'fetch_k': 50, 'lambda_mult': 0.85}
     )
 
-    if openai:
-        llm = get_llm(
-            "openai", 
-            temperature=temp,
-            model_name=os.getenv("OPENAI_API_MODEL"),
-            openai_key=os.getenv("OPENAI_API_KEY")
-        )
-    elif openllm:
-        llm_kwargs = {
-            "use_llama2_prompt": False,
-            "max_new_tokens":MAX_NEW_TOKENS,
-            "do_sample":True,
-            "temperature":temp,
-            "top_p":0.98,
-            "top_k":15,
-
-        }
-        llm = get_llm(
-            llm_type="openllm",
-            server_url=os.getenv("LLM_SERVER"),
-            llm_kwargs=llm_kwargs
-        )
-
-    else:
-        # llm = get_llm(
-        #     "hf",
-        #     model_name_or_path=os.getenv("HF_MODEL"),
-        #     model_kwargs={
-        #         "device_map":"cuda",
-        #         "trust_remote_code":False, 
-        #         "revision":"main"
-        #     },
-        #     pipe_kwargs={
-        #         "max_new_tokens":MAX_NEW_TOKENS,
-        #         "do_sample":True,
-        #         "temperature":temp,
-        #         "top_p":0.95,
-        #         "top_k":15,
-        #         "repetition_penalty":1.1
-        #         
-        #     }
-        # )
-        llm = hftgi_llm(
-            inference_server_url="http://localhost:8080/",
-            max_new_tokens=512,
-            do_sample=True,
-            top_k=15,
-            top_p=0.95,
-            temperature=temp,
-            repetition_penalty=1.1
-        )
+    llm = get_llm(
+        llm_type="hftgi",
+        server_url=os.getenv("LLM_SERVER"),
+    )
 
     chain = runnable_chain(llm, default_template, retriever)
     response = chain.invoke(question)
