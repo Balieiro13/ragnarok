@@ -16,12 +16,6 @@ collection_app = typer.Typer()
 app.add_typer(collection_app, name="collection")
 
 
-embedding_fn_kwargs={
-    "model_name": os.getenv("EMBEDDING_MODEL_NAME"),
-    "device": os.getenv("EMBEDDING_DEVICE"),
-    "normalize_embeddings": False
-}
-
 DB_CONFIG = KBConfig(
     host=os.getenv("DB_HOST"),
     port=os.getenv("DB_PORT"),
