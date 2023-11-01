@@ -40,8 +40,6 @@ def main(
         )
     )
 
-    MAX_NEW_TOKENS = 256
-    
     retriever = Chroma(
         client=db_config.client,
         collection_name=cn,
@@ -55,7 +53,7 @@ def main(
         llm_type="hftgi",
         llm_kwargs={
             "inference_server_url":os.getenv("LLM_SERVER"),
-            "max_new_tokens":min(max_tokens, MAX_NEW_TOKENS),
+            "max_new_tokens":max_tokens,
             "do_sample":True,
             "top_k":10,
             "top_p":0.95,
