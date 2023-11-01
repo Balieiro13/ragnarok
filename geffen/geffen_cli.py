@@ -16,12 +16,10 @@ load_dotenv()
 # @app.command()
 def main(
     question: str,
-    cn: str = "pf2e",
+    cn: str = "emb",
     k: int = 10,
     temp: float = 0.4,
-    verbose: bool =False, 
-    openai: bool = False,
-    openllm: bool = False,
+    max_tokens: int = 256
 ) -> None:
 
     default_template = '''
@@ -42,7 +40,7 @@ def main(
         )
     )
 
-    MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS"))
+    MAX_NEW_TOKENS = 256
     
     retriever = Chroma(
         client=db_config.client,
@@ -55,7 +53,15 @@ def main(
 
     llm = get_llm(
         llm_type="hftgi",
-        llm_kwargs={"server_url":os.getenv("LLM_SERVER")},
+        llm_kwargs={
+            "inference_server_url":os.getenv("LLM_SERVER"),
+            "max_new_tokens":min(max_tokens, MAX_NEW_TOKENS),
+            "do_sample":True,
+            "top_k":10,
+            "top_p":0.95,
+            "temperature":temp,
+            "repetition_penalty":1.15,    
+        }
     )
 
     chain = runnable_chain(llm, default_template, retriever)
