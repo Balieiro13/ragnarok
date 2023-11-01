@@ -44,10 +44,11 @@ def hftgi_llm(**kwargs) -> HuggingFaceTextGenInference:
     return llm
 
 def get_llm(llm_type, **llm_kwargs) -> OpenLLM:
-    models = {"hf": hf_llm(**llm_kwargs),
-              "hftgi": hftgi_llm(**llm_kwargs)}
+    models = {"hf": hf_llm,
+              "hftgi": hftgi_llm,}
     
-    return models[llm_type]
+    llm = models[llm_type] 
+    return llm(**llm_kwargs)
 
 def llm_chain(llm, template, **kwargs):
     prompt = setup_prompt(template)

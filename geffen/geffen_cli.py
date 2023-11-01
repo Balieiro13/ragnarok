@@ -55,7 +55,7 @@ def main(
 
     llm = get_llm(
         llm_type="hftgi",
-        server_url=os.getenv("LLM_SERVER"),
+        llm_kwargs={"server_url":os.getenv("LLM_SERVER")},
     )
 
     chain = runnable_chain(llm, default_template, retriever)
