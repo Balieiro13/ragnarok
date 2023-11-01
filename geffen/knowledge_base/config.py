@@ -4,21 +4,15 @@ from dataclasses import dataclass
 from chromadb import HttpClient
 from chromadb.config import Settings
 
-from knowledge_base.embeddings.sentence_transformers import SentenceTransformerEmbeddingFunction
+from knowledge_base.embeddings.types import EmbeddingFunction
 
 
 @dataclass
 class KBConfig:
+    embedding_fn: EmbeddingFunction
     host: str
     port: Optional[int] = None 
     settings: Optional[Dict[str, Any]] = None
-    embedding_fn_kwargs: Optional[Dict[str, Any]] = None
-
-    @property
-    def embedding_fn(self):
-        return SentenceTransformerEmbeddingFunction(
-            **self.embedding_fn_kwargs
-        )
 
     @property
     def client(self):

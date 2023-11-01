@@ -1,4 +1,5 @@
 from langchain.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain.llms.huggingface_text_gen_inference import HuggingFaceTextGenInference
 from langchain.llms.openllm import OpenLLM
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
@@ -25,8 +26,6 @@ def openllm(server_url:str, **llm_kwargs) -> OpenLLM:
 
 def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline:
     import warnings
-    from auto_gptq import exllama_set_max_input_length
-
     warnings.filterwarnings("ignore")
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -37,8 +36,6 @@ def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline
         model_name_or_path,
         **model_kwargs
     )
-
-    model = exllama_set_max_input_length(model, 4096)
     pipe = pipeline(
         "text-generation",
         model=model,
@@ -47,6 +44,12 @@ def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline
     )
 
     llm = HuggingFacePipeline(pipeline=pipe)
+    return llm
+
+def hftgi_llm(**kwargs) -> HuggingFaceTextGenInference:
+    llm = HuggingFaceTextGenInference(
+        **kwargs
+    )
     return llm
 
 def get_llm(llm_type, **llm_kwargs) -> OpenLLM:
