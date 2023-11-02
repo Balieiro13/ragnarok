@@ -17,7 +17,7 @@ services:
       - /var/ragnarok/TGI/data:/data
       - /tmp:/tmp
     environment:
-      - MODEL_ID=thebloke/mistral-7b-openorca-gptq
+      - MODEL_ID=TheBloke/Mistral-7B-Instruct-v0.1-GPTQ
       - MAX_INPUT_LENGTH=2048
       - MAX_TOTAL_TOKENS=4096
       - CUDA_MEMORY_FRACTION=0.6
@@ -33,12 +33,13 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    restart: always
 
   text_embeddings_inference:
     image: ghcr.io/huggingface/text-embeddings-inference:latest
     volumes:
       - /var/ragnarok/TEI/data:/data
-    command: --model-id BAAI/bge-large-en-v1.5
+    command: --model-id thenlper/gte-base
     ports:
       - 8081:80
     deploy:
@@ -48,6 +49,7 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    restart: always
 
 volumes:
   backups:

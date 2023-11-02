@@ -2,13 +2,12 @@ import os
 import typer
 from dotenv import load_dotenv
 
-from typing_extensions import Annotated
 from langchain.vectorstores.chroma import Chroma
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 from knowledge_base.config import KBConfig
 from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
-from chain.setup import get_llm, runnable_chain, hftgi_llm
+from chain.setup import get_llm, runnable_chain
 
 
 load_dotenv()
@@ -16,23 +15,23 @@ load_dotenv()
 
 # @app.command()
 def main(
-    question: str,
+    request: str,
     cn: str = "emb",
     k: int = 10,
     temp: float = 0.4,
-    max_tokens: int = 256
+    max_tokens: int = 1024
 ) -> None:
 
-    default_template = '''
-    You are an assistant that answers a request based on the following context.
-    Think about the informations that the context gives and return the most helpful aswer.
+    mistral_template = '''
+    <s>[INST] You are assistant that response a request based on the following context. 
+    Only return the response and nothing more.
 
     Context: {context}
 
-    User Request: {request}
+    Request: {request}
 
-    Assistant Helpful answer: 
-    '''
+    Assistant response:
+    [/INST]'''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
@@ -60,14 +59,15 @@ def main(
             "top_k":10,
             "top_p":0.95,
             "temperature":temp,
-            "repetition_penalty":1.15,    
+            "repetition_penalty":1.1,    
             "streaming":True,
             "callbacks":[StreamingStdOutCallbackHandler()]
         }
     )
 
-    chain = runnable_chain(llm, default_template, retriever)
-    chain.invoke(question)
+    chain = runnable_chain(llm, mistral_template, retriever)
+    chain.invoke(request)
+    print()
     
 if __name__=="__main__":
     # app()
