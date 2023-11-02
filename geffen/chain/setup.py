@@ -15,15 +15,6 @@ def setup_prompt(template):
         template=template
     )
 
-
-def openai_llm(openai_key: str, **kwargs) -> ChatOpenAI:
-    llm = ChatOpenAI(**kwargs)
-    return llm
-    
-def openllm(server_url:str, **llm_kwargs) -> OpenLLM:
-    llm = OpenLLM(server_url=server_url, **llm_kwargs)
-    return llm
-
 def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline:
     import warnings
     warnings.filterwarnings("ignore")
@@ -52,13 +43,11 @@ def hftgi_llm(**kwargs) -> HuggingFaceTextGenInference:
     )
     return llm
 
-def get_llm(llm_type, **llm_kwargs) -> OpenLLM:
-    if llm_type == 'openai':
-        return openai_llm(**llm_kwargs)
-    elif llm_type == 'hf':
+def get_llm(llm_type, llm_kwargs) -> OpenLLM:
+    if llm_type == "hf":
         return hf_llm(**llm_kwargs)
     else:
-        return openllm(**llm_kwargs)
+        return hftgi_llm(**llm_kwargs)
 
 def llm_chain(llm, template, **kwargs):
     prompt = setup_prompt(template)
@@ -81,5 +70,3 @@ def runnable_chain(llm, template: str, retriever: BaseRetriever):
     )
 
     return chain
-
-

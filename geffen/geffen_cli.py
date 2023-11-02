@@ -16,12 +16,10 @@ load_dotenv()
 # @app.command()
 def main(
     question: str,
-    cn: str = "pf2e",
+    cn: str = "emb",
     k: int = 10,
-    temp: float = 0.8,
-    max_tokens: int = 256,
-    verbose: bool = False, 
-    openai: bool = False,
+    temp: float = 0.4,
+    max_tokens: int = 256
 ) -> None:
 
     default_template = '''
@@ -38,11 +36,11 @@ def main(
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
-        embedding_fn=HFTEIEmbeddingFunction()
+        embedding_fn=HFTEIEmbeddingFunction(
+            os.getenv("EMBEDDING_FN_SERVER")
+        )
     )
 
-    MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS"))
-    
     retriever = Chroma(
         client=db_config.client,
         collection_name=cn,
@@ -52,25 +50,18 @@ def main(
         search_kwargs={'k': k, 'fetch_k': int(2*k), 'lambda_mult': 0.75}
     )
 
-    if openai:
-        llm = get_llm(
-            "openai", 
-            temperature=temp,
-            model_name=os.getenv("OPENAI_API_MODEL"),
-            openai_key=os.getenv("OPENAI_API_KEY")
-        )
-
-    else:
-        llm = hftgi_llm(
-            inference_server_url=os.getenv("LLM_SERVER"),
-            max_new_tokens=min(max_tokens,MAX_NEW_TOKENS),
-            do_sample=True,
-            top_k=10,
-            top_p=0.95,
-            temperature=temp,
-            repetition_penalty=1.15,
-
-        )
+    llm = get_llm(
+        llm_type="hftgi",
+        llm_kwargs={
+            "inference_server_url":os.getenv("LLM_SERVER"),
+            "max_new_tokens":max_tokens,
+            "do_sample":True,
+            "top_k":10,
+            "top_p":0.95,
+            "temperature":temp,
+            "repetition_penalty":1.15,    
+        }
+    )
 
     chain = runnable_chain(llm, default_template, retriever)
     response = chain.invoke(question)
