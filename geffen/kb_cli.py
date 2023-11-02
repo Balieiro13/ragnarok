@@ -20,7 +20,8 @@ DB_CONFIG = KBConfig(
     host=os.getenv("DB_HOST"),
     port=os.getenv("DB_PORT"),
     embedding_fn=HFTEIEmbeddingFunction(
-        os.getenv("EMBEDDING_FN_SERVER")
+        os.getenv("EMBEDDING_FN_SERVER"),
+        verbose=True
     )
 )
 CLIENT = KBRepository(

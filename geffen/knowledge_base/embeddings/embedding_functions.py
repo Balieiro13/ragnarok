@@ -8,17 +8,23 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
     # Since we do dynamic imports we have to type this as Any
     def __init__(
         self,
-        model_server: str = "http://localhost:8081/embed"
+        model_server: str = "http://localhost:8081/embed",
+        verbose: bool = False,
     ):
         import requests
 
         self._url = model_server
         self._session = requests.Session()
+        self._verbose = verbose
 
 
     def __call__(self, texts: Documents) -> Embeddings:
         chunk_size: int = 32
         embeddings = list()
+
+        if not self._verbose:
+            from functools import partialmethod
+            tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
         for i in tqdm(range(0, len(texts), chunk_size)):
             embeddings += (self._session.post(

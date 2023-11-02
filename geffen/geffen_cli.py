@@ -2,8 +2,9 @@ import os
 import typer
 from dotenv import load_dotenv
 
-from langchain.vectorstores.chroma import Chroma
 from typing_extensions import Annotated
+from langchain.vectorstores.chroma import Chroma
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 from knowledge_base.config import KBConfig
 from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
@@ -60,14 +61,14 @@ def main(
             "top_p":0.95,
             "temperature":temp,
             "repetition_penalty":1.15,    
+            "streaming":True,
+            "callbacks":[StreamingStdOutCallbackHandler()]
         }
     )
 
     chain = runnable_chain(llm, default_template, retriever)
-    response = chain.invoke(question)
+    chain.invoke(question)
     
-    print(response)
-
 if __name__=="__main__":
     # app()
     typer.run(main)

@@ -17,9 +17,9 @@ services:
       - /var/ragnarok/TGI/data:/data
       - /tmp:/tmp
     environment:
-      - MODEL_ID=thebloke/mistrallite-7b-gptq
-      - MAX_INPUT_LENGTH=4096
-      - MAX_TOTAL_TOKENS=5096
+      - MODEL_ID=thebloke/mistral-7b-openorca-gptq
+      - MAX_INPUT_LENGTH=2048
+      - MAX_TOTAL_TOKENS=4096
       - CUDA_MEMORY_FRACTION=0.6
       - TRUST_REMOTE_CODE=false
       - QUANTIZE=gptq
