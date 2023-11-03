@@ -23,7 +23,7 @@ def main(
 ) -> None:
 
     mistral_template = '''
-    <s>[INST] You are assistant that response a request based on the following context. 
+    <s>[INST] You are Geffen, a helpful AI assistant that give a response to a request based on the following context. 
     Only return the response and nothing more.
 
     Context: {context}
@@ -47,7 +47,9 @@ def main(
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",
-        search_kwargs={'k': k, 'fetch_k': int(2*k), 'lambda_mult': 0.75}
+        search_kwargs={'k': k, 
+                       'fetch_k': int(2*k),
+                       'lambda_mult': 0.75}
     )
 
     llm = get_llm(
