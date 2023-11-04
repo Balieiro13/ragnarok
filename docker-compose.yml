@@ -13,9 +13,9 @@ services:
 
   text_generation_inference:
     image: ghcr.io/huggingface/text-generation-inference:latest
+    shm_size: 1g
     volumes:
       - /stuff/volumes/ragnarok/TGI/data:/data
-      - /tmp:/tmp
     environment:
       - MODEL_ID=TheBloke/Mistral-7B-Instruct-v0.1-GPTQ
       - MAX_INPUT_LENGTH=3072
