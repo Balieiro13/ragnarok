@@ -1,10 +1,10 @@
 import uuid
 
-from langchain.document_loaders import PyPDFDirectoryLoader
+from langchain.document_loaders import ConcurrentLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-from knowledge_base.embeddings.types import Documents, Embeddings, EmbeddingFunction
 from knowledge_base.etl.base import KBETL
+from knowledge_base.embeddings.types import EmbeddingFunction
 
 
 class KBRecursive(KBETL):
@@ -17,14 +17,19 @@ class KBRecursive(KBETL):
         self.collection = collection
 
     def extract_data(self, filepath: str) -> None:
-        loader = PyPDFDirectoryLoader(filepath)
+        loader = ConcurrentLoader.from_filesystem(
+            path=filepath,
+            glob="*",
+            suffixes=[".pdf"],
+            show_progress=True,
+        )
         self.documents = loader.load()
     
     def split_in_chunks(self, chunk_size: int, chunk_overlap: int) -> None:
         splitter = RecursiveCharacterTextSplitter(
             separators=["\n\n", "\n", " ", ""],
             chunk_size=chunk_size,
-            chunk_overlap=chunk_overlap
+            chunk_overlap=chunk_overlap,
         )
         self.chunks = splitter.split_documents(self.documents)
         self.chunks_content = [chunk.page_content for chunk in self.chunks]

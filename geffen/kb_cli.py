@@ -5,7 +5,6 @@ from typing_extensions import Annotated
 
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
-from knowledge_base.etl.base import KBETL
 from knowledge_base.etl.recursive import KBRecursive
 from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
 
@@ -56,7 +55,7 @@ def store_vectors(
     chunk_overlap: int = 20, 
 ) -> None:
     collection = CLIENT.get_or_create_collection(cn)
-    etl: KBETL = KBRecursive(collection)
+    etl = KBRecursive(collection)
 
     print("Loading data from directory...")
     etl.extract_data(path)

@@ -14,11 +14,11 @@ services:
   text_generation_inference:
     image: ghcr.io/huggingface/text-generation-inference:latest
     volumes:
-      - /var/ragnarok/TGI/data:/data
+      - /stuff/volumes/ragnarok/TGI/data:/data
       - /tmp:/tmp
     environment:
       - MODEL_ID=TheBloke/Mistral-7B-Instruct-v0.1-GPTQ
-      - MAX_INPUT_LENGTH=2048
+      - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
       - CUDA_MEMORY_FRACTION=0.6
       - TRUST_REMOTE_CODE=false
@@ -38,7 +38,7 @@ services:
   text_embeddings_inference:
     image: ghcr.io/huggingface/text-embeddings-inference:latest
     volumes:
-      - /var/ragnarok/TEI/data:/data
+      - /stuff/volumes/ragnarok/TEI/data:/data
     command: --model-id thenlper/gte-base
     ports:
       - 8081:80

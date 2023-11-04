@@ -16,7 +16,7 @@ load_dotenv()
 # @app.command()
 def main(
     request: str,
-    cn: str = "emb",
+    cn: str = "pf2e",
     k: int = 10,
     temp: float = 0.4,
     max_tokens: int = 1024

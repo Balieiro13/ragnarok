@@ -5,3 +5,4 @@ sentence-transformers==2.2.2
 pypdf==3.16.4
 typer==0.9.0
 text-generation==0.6.1
+PyMuPDF==1.23.5
