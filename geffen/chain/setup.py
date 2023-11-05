@@ -13,39 +13,11 @@ def setup_prompt(template):
         template=template
     )
 
-def hf_llm(model_name_or_path, model_kwargs, pipe_kwargs) -> HuggingFacePipeline:
-    import warnings
-    warnings.filterwarnings("ignore")
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_name_or_path, 
-        use_fast=True
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name_or_path,
-        **model_kwargs
-    )
-    pipe = pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        **pipe_kwargs
-    )
-
-    llm = HuggingFacePipeline(pipeline=pipe)
-    return llm
-
-def hftgi_llm(**kwargs) -> HuggingFaceTextGenInference:
+def get_llm(**kwargs) -> HuggingFaceTextGenInference:
     llm = HuggingFaceTextGenInference(
         **kwargs
     )
     return llm
-
-def get_llm(llm_type, llm_kwargs):
-    if llm_type == "hf":
-        return hf_llm(**llm_kwargs)
-    else:
-        return hftgi_llm(**llm_kwargs)
 
 def runnable_chain(llm, template: str, retriever: BaseRetriever):
     def format_docs(docs):

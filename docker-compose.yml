@@ -17,12 +17,12 @@ services:
     volumes:
       - /stuff/volumes/ragnarok/TGI/data:/data
     environment:
-      - MODEL_ID=TheBloke/Mistral-7B-Instruct-v0.1-GPTQ
+      - MODEL_ID=TheBloke/openchat_3.5-AWQ
       - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
-      - CUDA_MEMORY_FRACTION=0.6
+      - CUDA_MEMORY_FRACTION=0.8
       - TRUST_REMOTE_CODE=false
-      - QUANTIZE=gptq
+      - QUANTIZE=awq
       - SHARDED=false
     ports:
       - 8080:80

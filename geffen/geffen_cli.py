@@ -10,28 +10,19 @@ from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
 from chain.setup import get_llm, runnable_chain
 
 
-load_dotenv()
-# app = typer.Typer()
-
-# @app.command()
 def main(
     request: str,
     cn: str = "pf2e",
     k: int = 10,
-    temp: float = 0.4,
+    temp: float = 0.6,
     max_tokens: int = 1024
 ) -> None:
 
-    mistral_template = '''
-    <s>[INST] You are Geffen, a helpful AI assistant that give a response to a request based on the following context. 
-    Only return the response and nothing more.
-
+    openchat_template = '''User: You are Geffen, a helpful AI assistant that give a response to a request based on the following context. Only return the response and nothing more.
     Context: {context}
-
     Request: {request}
-
-    Assistant response:
-    [/INST]'''
+    <|end_of_turn|>
+    Assistant:'''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
@@ -49,22 +40,19 @@ def main(
         search_type="mmr",
         search_kwargs={'k': k, 
                        'fetch_k': int(2*k),
-                       'lambda_mult': 0.75}
+                       'lambda_mult': 0.85}
     )
 
     llm = get_llm(
-        llm_type="hftgi",
-        llm_kwargs={
-            "inference_server_url":os.getenv("LLM_SERVER"),
-            "max_new_tokens":max_tokens,
-            "do_sample":True,
-            "top_k":10,
-            "top_p":0.95,
-            "temperature":temp,
-            "repetition_penalty":1.1,    
-            "streaming":True,
-            "callbacks":[StreamingStdOutCallbackHandler()]
-        }
+        inference_server_url=os.getenv("LLM_SERVER"),
+        max_new_tokens=max_tokens,
+        do_sample=True,
+        top_k=10,
+        top_p=0.95,
+        temperature=temp,
+        repetition_penalty=1.1,
+        streaming=True,
+        callbacks=[StreamingStdOutCallbackHandler()]
     )
 
     chain = runnable_chain(llm, mistral_template, retriever)
@@ -72,5 +60,5 @@ def main(
     print()
     
 if __name__=="__main__":
-    # app()
+    load_dotenv()
     typer.run(main)

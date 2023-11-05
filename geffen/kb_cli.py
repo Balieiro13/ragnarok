@@ -8,12 +8,10 @@ from knowledge_base.repository import KBRepository
 from knowledge_base.etl.recursive import KBRecursive
 from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
 
-load_dotenv()
 
 app = typer.Typer()
 collection_app = typer.Typer()
 app.add_typer(collection_app, name="collection")
-
 
 DB_CONFIG = KBConfig(
     host=os.getenv("DB_HOST"),
@@ -88,4 +86,5 @@ def reset_chroma(
     
 
 if __name__ == "__main__":
+    load_dotenv()
     app()
