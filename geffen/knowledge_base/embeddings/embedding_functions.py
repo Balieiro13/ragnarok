@@ -16,16 +16,14 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
         verbose: bool = False,
     ):
         import requests
-
         self._url = model_server
         self._session = requests.Session()
         self._verbose = verbose
 
-
     def __call__(self, texts: Documents) -> Embeddings:
         chunk_size: int = 32
         embeddings = list()
-
+        
         if not self._verbose:
             from functools import partialmethod
             tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)

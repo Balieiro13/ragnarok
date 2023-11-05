@@ -55,7 +55,7 @@ def main(
         callbacks=[StreamingStdOutCallbackHandler()]
     )
 
-    chain = runnable_chain(llm, mistral_template, retriever)
+    chain = runnable_chain(llm, openchat_template, retriever)
     chain.invoke(request)
     print()
     
