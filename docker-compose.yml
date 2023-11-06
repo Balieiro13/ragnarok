@@ -17,11 +17,12 @@ services:
     volumes:
       - /var/ragnarok/TGI/data:/data
     environment:
-      - MODEL_ID=HuggingFaceH4/zephyr-7b-beta
+      - MODEL_ID=TheBloke/openchat_3.5-AWQ
       - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
       - CUDA_MEMORY_FRACTION=0.8
       - TRUST_REMOTE_CODE=false
+      - QUANTIZE=awq
       - SHARDED=false
     ports:
       - 8080:80
