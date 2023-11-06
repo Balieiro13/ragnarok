@@ -18,14 +18,14 @@ def main(
     max_tokens: int = 1024
 ) -> None:
 
-    openchat_template = '''
-    <|system|>
+    openchat_template = '''<|system|>
     You are Geffen, a helpful AI assistant that give a response to a request 
-    based on the following context. Only return the response and nothing more.</s>
+    based on the following context. Only return the response and nothing more.
+    Context: {context}</s>
     <|user|>
-    Context: {context}
     Request: {request}</s>
     <|assistant|>
+    Response:
     '''
 
     db_config = KBConfig(
