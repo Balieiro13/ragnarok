@@ -23,6 +23,14 @@ def delete_collection(collection_name: str) -> None:
     CLIENT.delete_collection(collection_name)
     print("Done!")
 
+@collection_app.command("rename")
+def rename_collection(old_name: str, new_name: str) -> None:
+    CLIENT.rename_collection(
+        old_collection_name=old_name,
+        new_collection_name=new_name,
+    )
+    print("The collection has been renamed!")
+
 @app.command()
 def query(
     query: str,

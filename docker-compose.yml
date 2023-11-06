@@ -38,7 +38,9 @@ services:
     image: ghcr.io/huggingface/text-embeddings-inference:latest
     volumes:
       - /var/ragnarok/TEI/data:/data
-    command: --model-id thenlper/gte-base
+    environment:
+      - MODEL_ID=thenlper/gte-base
+      - MAX_CLIENT_BATCH_SIZE=128
     ports:
       - 8081:80
     deploy:

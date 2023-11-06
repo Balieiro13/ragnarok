@@ -21,7 +21,7 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
         self._verbose = verbose
 
     def __call__(self, texts: Documents) -> Embeddings:
-        chunk_size: int = 32
+        chunk_size: int = 128
         embeddings = list()
         
         if not self._verbose:

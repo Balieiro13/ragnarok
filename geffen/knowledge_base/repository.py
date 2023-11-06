@@ -37,6 +37,14 @@ class KBRepository:
     def update_collection(self, collection_name: str) -> None:
         #TODO
         pass
+
+    def rename_collection(
+        self,
+        old_collection_name: str,
+        new_collection_name: str
+    ) -> None:
+        collection = self.get_collection(old_collection_name)
+        collection.modify(name=new_collection_name)
     
     def delete_collection(self, collection_name: str) -> None:
         self.client.delete_collection(
