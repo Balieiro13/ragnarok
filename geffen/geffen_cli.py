@@ -19,13 +19,15 @@ def main(
     max_tokens: int = 1024
 ) -> None:
 
-    openchat_template = '''
-    User: You are Geffen, a helpful AI assistant that give a response to a request 
+    zephyr_template = '''<|system|>
+    You are Geffen, a helpful AI assistant that give a response to a request
     based on the following context. Only return the response and nothing more.
-    Context: {context}
-    Request: {request}
-    <|end_of_turn|>Assistant:'''
-
+    Context: {context}</s>
+    <|user|>
+    Request: {request}</s>
+    <|assistant|>
+    Response:
+    '''
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
