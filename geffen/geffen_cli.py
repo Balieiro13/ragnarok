@@ -59,5 +59,7 @@ def main(
     print()
     
 if __name__=="__main__":
+    import warnings
+    warnings.filterwarnings("ignore")
     load_dotenv()
     typer.run(main)
