@@ -56,7 +56,7 @@ def main(
         streaming=True,
         callbacks=[StreamingStdOutCallbackHandler()]
     )
-    chain = retrieval_qa(llm, openchat_template, retriever)
+    chain = retrieval_qa(llm, zephyr_template, retriever)
     chain.invoke(request)
     print()
     
