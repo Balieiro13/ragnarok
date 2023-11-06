@@ -1,4 +1,5 @@
 import uuid
+from tqdm import tqdm
 
 from langchain.document_loaders import ConcurrentLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -19,7 +20,7 @@ class KBRecursive(KBETL):
     def extract_data(self, filepath: str) -> None:
         loader = ConcurrentLoader.from_filesystem(
             path=filepath,
-            glob="*",
+            glob="**/*.pdf",
             suffixes=[".pdf"],
             show_progress=True,
         )
@@ -38,11 +39,13 @@ class KBRecursive(KBETL):
     def embed_data(self, embedding_fn: EmbeddingFunction) -> None:
         self.embeddings = embedding_fn(self.chunks_content)
         
-    def load_data(self):
+    def load_data(self, batch_size: int = 128) -> None:
         ids = [str(uuid.uuid1()) for _ in range(len(self.chunks))] 
-        self.collection.add(
-            documents=self.chunks_content,
-            embeddings=self.embeddings,
-            metadatas=self.chunks_metadata,
-            ids=ids
-        )
+
+        for i in tqdm(range(0, len(ids), batch_size)):
+            self.collection.add(
+                documents=self.chunks_content[i:i+batch_size],
+                embeddings=self.embeddings[i:i+batch_size],
+                metadatas=self.chunks_metadata[i:i+batch_size],
+                ids=ids[i:i+batch_size]
+            )
