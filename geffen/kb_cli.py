@@ -13,19 +13,6 @@ app = typer.Typer()
 collection_app = typer.Typer()
 app.add_typer(collection_app, name="collection")
 
-DB_CONFIG = KBConfig(
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    embedding_fn=HFTEIEmbeddingFunction(
-        os.getenv("EMBEDDING_FN_SERVER"),
-        verbose=True
-    )
-)
-CLIENT = KBRepository(
-    client=DB_CONFIG.client,
-    embedding_fn=DB_CONFIG.embedding_fn
-)
-
 @collection_app.command("ls")
 def list_collections():
     print(CLIENT.list_collections())
@@ -86,5 +73,19 @@ def reset_chroma(
     
 
 if __name__ == "__main__":
+
     load_dotenv()
+
+    DB_CONFIG = KBConfig(
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        embedding_fn=HFTEIEmbeddingFunction(
+            os.getenv("EMBEDDING_FN_SERVER"),
+            verbose=True
+        )
+    )
+    CLIENT = KBRepository(
+        client=DB_CONFIG.client,
+        embedding_fn=DB_CONFIG.embedding_fn
+    )
     app()

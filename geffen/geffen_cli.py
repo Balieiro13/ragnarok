@@ -18,11 +18,12 @@ def main(
     max_tokens: int = 1024
 ) -> None:
 
-    openchat_template = '''User: You are Geffen, a helpful AI assistant that give a response to a request based on the following context. Only return the response and nothing more.
+    openchat_template = '''
+    GPT4 User: You are Geffen, a helpful AI assistant that give a response to a request 
+    based on the following context. Only return the response and nothing more.
     Context: {context}
     Request: {request}
-    <|end_of_turn|>
-    Assistant:'''
+    <|end_of_turn|>GPT4 Assistant:'''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
@@ -31,7 +32,6 @@ def main(
             os.getenv("EMBEDDING_FN_SERVER")
         )
     )
-
     retriever = Chroma(
         client=db_config.client,
         collection_name=cn,
@@ -42,7 +42,6 @@ def main(
                        'fetch_k': int(2*k),
                        'lambda_mult': 0.85}
     )
-
     llm = get_llm(
         inference_server_url=os.getenv("LLM_SERVER"),
         max_new_tokens=max_tokens,
@@ -54,7 +53,6 @@ def main(
         streaming=True,
         callbacks=[StreamingStdOutCallbackHandler()]
     )
-
     chain = runnable_chain(llm, openchat_template, retriever)
     chain.invoke(request)
     print()
