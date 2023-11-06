@@ -12,18 +12,21 @@ from chain.setup import get_llm, runnable_chain
 
 def main(
     request: str,
-    cn: str = "pf2e",
+    cn: str = "emb",
     k: int = 10,
     temp: float = 0.6,
     max_tokens: int = 1024
 ) -> None:
 
     openchat_template = '''
-    GPT4 User: You are Geffen, a helpful AI assistant that give a response to a request 
-    based on the following context. Only return the response and nothing more.
+    <|system|>
+    You are Geffen, a helpful AI assistant that give a response to a request 
+    based on the following context. Only return the response and nothing more.</s>
+    <|user|>
     Context: {context}
-    Request: {request}
-    <|end_of_turn|>GPT4 Assistant:'''
+    Request: {request}</s>
+    <|assistant|>
+    '''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),

@@ -15,14 +15,13 @@ services:
     image: ghcr.io/huggingface/text-generation-inference:latest
     shm_size: 1g
     volumes:
-      - /stuff/volumes/ragnarok/TGI/data:/data
+      - /var/ragnarok/TGI/data:/data
     environment:
-      - MODEL_ID=TheBloke/openchat_3.5-AWQ
+      - MODEL_ID=HuggingFaceH4/zephyr-7b-beta
       - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
       - CUDA_MEMORY_FRACTION=0.8
       - TRUST_REMOTE_CODE=false
-      - QUANTIZE=awq
       - SHARDED=false
     ports:
       - 8080:80
@@ -38,7 +37,7 @@ services:
   text_embeddings_inference:
     image: ghcr.io/huggingface/text-embeddings-inference:latest
     volumes:
-      - /stuff/volumes/ragnarok/TEI/data:/data
+      - /var/ragnarok/TEI/data:/data
     command: --model-id thenlper/gte-base
     ports:
       - 8081:80
