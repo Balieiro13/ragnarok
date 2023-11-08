@@ -20,8 +20,7 @@ def main(
 ) -> None:
 
     zephyr_template = '''<|system|>
-    You are Geffen, a helpful AI assistant that give a response to a request
-    based on the following context. Only return the response and nothing more.
+    You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more.
     Context: {context}</s>
     <|user|>
     Request: {request}</s>

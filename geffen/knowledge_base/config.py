@@ -21,10 +21,10 @@ class KBConfig:
         else:
             settings = Settings()
 
-        if self.host.startswith("https"):
+        if self.host.startswith("http"):
            return HttpClient(host=self.host,
                              settings=settings,
-                             ssl=True)
+                             ssl=False)
         else:
             return HttpClient(host=self.host,
                               port=self.port,
