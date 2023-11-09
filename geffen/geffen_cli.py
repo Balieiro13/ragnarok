@@ -19,12 +19,10 @@ def main(
     max_tokens: int = 1024
 ) -> None:
 
-    openchat_template = '''
-    User: You are Geffen, a helpful AI assistant that give a response to a request 
-    based on the following context. Only return the response and nothing more.
+    mistral_instruct_template='''<s>[INST] You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more.
     Context: {context}
     Request: {request}
-    <|end_of_turn|>Assistant:'''
+    Response: [/INST]'''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
@@ -54,7 +52,7 @@ def main(
         streaming=True,
         callbacks=[StreamingStdOutCallbackHandler()]
     )
-    chain = retrieval_qa(llm, openchat_template, retriever)
+    chain = retrieval_qa(llm, mistral_instruct_template, retriever)
     chain.invoke(request)
     print()
     
