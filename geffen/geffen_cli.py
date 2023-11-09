@@ -19,10 +19,12 @@ def main(
     max_tokens: int = 1024
 ) -> None:
 
-    mistral_instruct_template='''<s>[INST] You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more.
-    Context: {context}
-    Request: {request}
-    Response: [/INST]'''
+    zephyr_template = '''<|system|> You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more. 
+    Context: {context}</s>
+    <|user|>
+    Request: {request}</s>
+    <|assistant|>
+    Response:'''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
@@ -52,7 +54,7 @@ def main(
         streaming=True,
         callbacks=[StreamingStdOutCallbackHandler()]
     )
-    chain = retrieval_qa(llm, mistral_instruct_template, retriever)
+    chain = retrieval_qa(llm, zephyr_template, retriever)
     chain.invoke(request)
     print()
     
