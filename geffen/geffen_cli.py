@@ -13,23 +13,30 @@ from chain.retrieval import retrieval_qa
 
 def main(
     request: str,
-    cn: str = "emb",
+    cn: str = "pf2e",
     k: int = 10,
     temp: float = 0.6,
     max_tokens: int = 1024
 ) -> None:
 
+    # zephyr_template = '''<|system|> You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more. 
+    # Context: {context}</s>
+    # <|user|>
+    # Request: {request}</s>
+    # <|assistant|>
+    # Response:'''
     zephyr_template = '''<|system|>
-    You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more.
-    Context: {context}</s>
+    You are Geffen, a helpful AI assistant that gives a \
+    response to a request based on the following context. \
+    Only return the response and nothing more. 
+    Context: {context} </s>
     <|user|>
-    Request: {request}</s>
+    Request: {request} </s>
     <|assistant|>
-    Response:
-    '''
+    Response: '''
+
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
         embedding_fn=HFTEIEmbeddingFunction(
             os.getenv("EMBEDDING_FN_SERVER")
         )
