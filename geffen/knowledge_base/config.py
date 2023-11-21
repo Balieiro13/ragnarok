@@ -11,7 +11,6 @@ from knowledge_base.embeddings.types import EmbeddingFunction
 class KBConfig:
     embedding_fn: EmbeddingFunction
     host: str
-    port: Optional[int] = None 
     settings: Optional[Dict[str, Any]] = None
 
     @property

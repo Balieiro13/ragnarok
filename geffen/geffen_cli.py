@@ -19,21 +19,15 @@ def main(
     max_tokens: int = 1024
 ) -> None:
 
-    # zephyr_template = '''<|system|> You are Geffen, a helpful AI assistant that gives a response to a request based on the following context. Only return the response and nothing more. 
-    # Context: {context}</s>
-    # <|user|>
-    # Request: {request}</s>
-    # <|assistant|>
-    # Response:'''
-    zephyr_template = '''<|system|>
+    zephyr_template = '''<|system|> 
     You are Geffen, a helpful AI assistant that gives a \
     response to a request based on the following context. \
     Only return the response and nothing more. 
-    Context: {context} </s>
+    Context: {context}</s>
     <|user|>
-    Request: {request} </s>
+    Request: {request}</s>
     <|assistant|>
-    Response: '''
+    Response:'''
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),

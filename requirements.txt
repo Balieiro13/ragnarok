@@ -1,8 +1,10 @@
 python-dotenv==1.0.0
 chromadb==0.4.14
-langchain==0.0.329
+langchain==0.0.335
 sentence-transformers==2.2.2
 pypdf==3.16.4
 typer==0.9.0
 text-generation==0.6.1
 PyMuPDF==1.23.5
+langserve==0.0.27
+sse-starlette==1.6.5
