@@ -24,8 +24,6 @@ Request: {request}</s>
 <|assistant|>
 Response:'''
 
-
-
 db_config = KBConfig(
         host=os.getenv("DB_HOST"),
         embedding_fn=HFTEIEmbeddingFunction(
