@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   chromadb:
+    container_name: "ChromaDB"
     image: ghcr.io/chroma-core/chroma:latest
     volumes:
       - /var/chromadb/index-data:/chroma/chroma/
@@ -12,6 +13,7 @@ services:
     restart: always
 
   text_generation_inference:
+    container_name: "TGI"
     image: ghcr.io/huggingface/text-generation-inference:latest
     shm_size: 1g
     volumes:
@@ -36,11 +38,12 @@ services:
     restart: always
 
   text_embeddings_inference:
+    container_name: "TEI"
     image: ghcr.io/huggingface/text-embeddings-inference:latest
     volumes:
       - /var/ragnarok/TEI/data:/data
     environment:
-      - MODEL_ID=thenlper/gte-base
+      - MODEL_ID=BAAI/bge-large-en-v1.5
       - MAX_CLIENT_BATCH_SIZE=128
     ports:
       - 8081:80
