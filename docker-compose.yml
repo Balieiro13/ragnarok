@@ -10,7 +10,6 @@ services:
       - ALLOW_RESET=True
     ports:
       - 8000:8000
-    restart: always
 
   text_generation_inference:
     container_name: "TGI"
@@ -19,7 +18,8 @@ services:
     volumes:
       - /var/ragnarok/TGI/data:/data
     environment:
-      - MODEL_ID=TheBloke/zephyr-7B-beta-AWQ
+      #- MODEL_ID=TheBloke/zephyr-7B-beta-AWQ
+      - MODEL_ID=TheBloke/neural-chat-7B-v3-1-AWQ
       - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
       - CUDA_MEMORY_FRACTION=0.8
@@ -35,7 +35,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    restart: always
 
   text_embeddings_inference:
     container_name: "TEI"
@@ -54,7 +53,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    restart: always
 
 volumes:
   backups:

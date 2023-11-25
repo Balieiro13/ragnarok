@@ -14,15 +14,16 @@ from chain.retrieval import retrieval_qa
 
 load_dotenv()
 
-zephyr_template = '''<|system|>
+zephyr_template = '''### System:
 You are Geffen, a helpful AI assistant that gives a \
 response to a request based on the following context. \
 Only return the response and nothing more.
 Context: {context}</s>
-<|user|>
+
+### User:
 Request: {request}</s>
-<|assistant|>
-Response:'''
+
+### Assistant:'''
 
 db_config = KBConfig(
         host=os.getenv("DB_HOST"),

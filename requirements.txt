@@ -8,3 +8,4 @@ text-generation==0.6.1
 PyMuPDF==1.23.5
 langserve==0.0.27
 sse-starlette==1.6.5
+gunicorn==21.2.0
