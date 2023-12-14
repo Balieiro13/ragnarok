@@ -3,9 +3,12 @@ import typer
 from dotenv import load_dotenv
 from typing_extensions import Annotated
 
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.document_loaders import ConcurrentLoader
+
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
-from knowledge_base.etl.recursive import KBRecursive
+from knowledge_base.etl.base import KBETLBase
 from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
 
 
@@ -47,21 +50,31 @@ def store_vectors(
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
-    collection = CLIENT.get_or_create_collection(cn)
-    etl = KBRecursive(collection)
+    loader = ConcurrentLoader.from_filesystem(
+        path=path,
+        glob="**/*.pdf",
+        suffixes=[".pdf"],
+        show_progress=True,
+    )
+    splitter = RecursiveCharacterTextSplitter(
+        separators=["\n\n", "\n", " ", ""],
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+    )
+    collection = CLIENT.get_or_create_collection(collection_name=cn)
+    etl = KBETLBase()
 
     print("Loading data from directory...")
-    etl.extract_data(path)
+    etl.extract_data(loader=loader)
 
     print("Spliting data in Chunks...")
-    etl.split_in_chunks(chunk_size=chunk_size, 
-                        chunk_overlap=chunk_overlap)
+    etl.split_in_chunks(splitter=splitter)
 
     print("Embedding chunks...")
     etl.embed_data(embedding_fn=DB_CONFIG.embedding_fn)
 
     print("Loading data into VectorStore...")
-    etl.load_data()
+    etl.load_data(collection=collection)
 
     print("Done!")   
 
@@ -86,7 +99,6 @@ if __name__ == "__main__":
 
     DB_CONFIG = KBConfig(
         host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
         embedding_fn=HFTEIEmbeddingFunction(
             os.getenv("EMBEDDING_FN_SERVER"),
             verbose=True
