@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from typing_extensions import Annotated
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import ConcurrentLoader
+from langchain_community.document_loaders import ConcurrentLoader
 
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository

@@ -20,7 +20,7 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
         self._session = requests.Session()
         self._verbose = verbose
 
-    def __call__(self, texts: Documents) -> Embeddings:
+    def __call__(self, input: Documents) -> Embeddings:
         chunk_size: int = 128
         embeddings = list()
         
@@ -28,9 +28,9 @@ class HFTEIEmbeddingFunction(EmbeddingFunction):
             from functools import partialmethod
             tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
-        for i in tqdm(range(0, len(texts), chunk_size)):
+        for i in tqdm(range(0, len(input), chunk_size)):
             embeddings += (self._session.post(
-                self._url, json={"inputs": texts[i:i+chunk_size]}
+                self._url, json={"inputs": input[i:i+chunk_size]}
             ).json())
         return embeddings
 
