@@ -10,7 +10,7 @@ from knowledge_base.embeddings.types import EmbeddingFunction
 
 class KBETL(Protocol):
     
-    def extract_data(sefl):
+    def extract_data(self):
         ...
     
     def split_in_chunks(self):
