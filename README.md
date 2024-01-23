@@ -1,5 +1,9 @@
 # Projeto Ragnarok
 
+Este é um projeto que utiliza as APIs TGI e TEI, disponibilizdas pelo HuggingFace, junto a ao LangChain para construir uma arquitetura de RAG (Retrieval Augmented Generation).
+
+## Setup
+
 Sugiro criar um virtual environment antes de começar a rodar este projeto:
 ```
 python -m venv .venv
