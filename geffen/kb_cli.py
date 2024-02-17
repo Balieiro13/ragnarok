@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from typing_extensions import Annotated
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import ConcurrentLoader
+from langchain_community.document_loaders import ConcurrentLoader, TextLoader
 
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
@@ -50,12 +50,17 @@ def store_vectors(
     chunk_size: int = 300, 
     chunk_overlap: int = 20, 
 ) -> None:
-    loader = ConcurrentLoader.from_filesystem(
+    pdf_dir_loader = ConcurrentLoader.from_filesystem(
         path=path,
         glob="**/*.pdf",
         suffixes=[".pdf"],
         show_progress=True,
     )
+
+    text_loader = TextLoader(path)
+
+    loader = text_loader if path.endswith(".txt") else pdf_dir_loader
+
     splitter = RecursiveCharacterTextSplitter(
         separators=["\n\n", "\n", " ", ""],
         chunk_size=chunk_size,
