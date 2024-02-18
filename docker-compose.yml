@@ -17,12 +17,10 @@ services:
     volumes:
       - /var/ragnarok/TGI/data:/data
     environment:
-      - MODEL_ID=HuggingFaceH4/zephyr-7b-beta
+      - MODEL_ID=mistralai/Mistral-7B-Instruct-v0.2
+
       - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
-      - CUDA_MEMORY_FRACTION=0.8
-      - TRUST_REMOTE_CODE=false
-      - SHARDED=false
     ports:
       - 8080:80
     deploy:
@@ -39,8 +37,9 @@ services:
     volumes:
       - /var/ragnarok/TEI/data:/data
     environment:
-      - MODEL_ID=thenlper/gte-base
+      - MODEL_ID=WhereIsAI/UAE-Large-V1
       - MAX_CLIENT_BATCH_SIZE=128
+      - POOLING=cls
     ports:
       - 8081:80
     deploy:
