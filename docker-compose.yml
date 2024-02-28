@@ -18,7 +18,6 @@ services:
       - /var/ragnarok/TGI/data:/data
     environment:
       - MODEL_ID=mistralai/Mistral-7B-Instruct-v0.2
-
       - MAX_INPUT_LENGTH=3072
       - MAX_TOTAL_TOKENS=4096
     ports:
