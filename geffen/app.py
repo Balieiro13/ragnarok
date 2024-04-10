@@ -14,16 +14,15 @@ from chain.retrieval import retrieval_qa
 
 load_dotenv()
 
-zephyr_template = '''<|system|>
-You are Geffen, a helpful AI assistant that gives a \
-response to a request based on the following context. \
-Only return the response and nothing more.
-Context: {context}</s>
-<|user|>
-Request: {request}</s>
-<|assistant|>
-Response:'''
+mistral_template = '''[INST] \
+    You are Geffen, a helpful AI assistant that gives a \
+    response to a request based on the following context. \
+    Only return the response and nothing more.
+    Context: {context}
 
+    Request: {request}
+
+    Response:[/INST]'''
 
 
 db_config = KBConfig(
@@ -34,7 +33,7 @@ db_config = KBConfig(
     )
 retriever = Chroma(
         client=db_config.client,
-        collection_name="pf2e",
+        collection_name="poc",
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",
@@ -62,7 +61,7 @@ llm = HuggingFaceTextGenInference(
             description="The temperature of the LLM",
         ),
     )
-chain = retrieval_qa(llm, zephyr_template, retriever)
+chain = retrieval_qa(llm, mistral_template, retriever)
 
 app = FastAPI(
     title="LangChain Server",
@@ -73,4 +72,4 @@ add_routes(app, chain)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="localhost", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8001)

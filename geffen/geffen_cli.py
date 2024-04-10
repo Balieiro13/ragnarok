@@ -13,7 +13,7 @@ from chain.retrieval import retrieval_qa
 
 def main(
     request: str,
-    cn: str = "pf2e",
+    cn: str = "poc",
     k: int = 10,
     temp: float = 0.6,
     max_tokens: int = 1024
