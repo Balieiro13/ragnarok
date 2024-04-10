@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   chromadb:
     image: ghcr.io/chroma-core/chroma:latest
@@ -18,8 +16,9 @@ services:
       - /var/ragnarok/TGI/data:/data
     environment:
       - MODEL_ID=mistralai/Mistral-7B-Instruct-v0.2
-      - MAX_INPUT_LENGTH=3072
-      - MAX_TOTAL_TOKENS=4096
+      - MAX_INPUT_LENGTH=8192
+      - MAX_BATCH_PREFILL_TOKENS=8192
+      - MAX_TOTAL_TOKENS=10240
     ports:
       - 8080:80
     deploy:
