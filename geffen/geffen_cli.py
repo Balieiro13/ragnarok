@@ -7,7 +7,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms.huggingface_text_gen_inference import HuggingFaceTextGenInference
 
 from knowledge_base.config import KBConfig
-from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
+from knowledge_base.embeddings.embedding_functions import HuggingFaceTEI
 from chain.retrieval import retrieval_qa
 
 
@@ -31,8 +31,8 @@ def main(
 
     db_config = KBConfig(
         host=os.getenv("DB_HOST"),
-        embedding_fn=HFTEIEmbeddingFunction(
-            os.getenv("EMBEDDING_FN_SERVER")
+        embedding_fn=HuggingFaceTEI(
+            model=os.getenv("EMBEDDING_FN_SERVER")
         )
     )
     retriever = Chroma(

@@ -9,7 +9,7 @@ from langchain_community.document_loaders import ConcurrentLoader, TextLoader
 from knowledge_base.config import KBConfig
 from knowledge_base.repository import KBRepository
 from knowledge_base.etl.base import KBETLBase
-from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
+from knowledge_base.embeddings.embedding_functions import HuggingFaceTEI
 
 
 app = typer.Typer()
@@ -104,9 +104,8 @@ if __name__ == "__main__":
 
     DB_CONFIG = KBConfig(
         host=os.getenv("DB_HOST"),
-        embedding_fn=HFTEIEmbeddingFunction(
-            os.getenv("EMBEDDING_FN_SERVER"),
-            verbose=True
+        embedding_fn=HuggingFaceTEI(
+            model=os.getenv("EMBEDDING_FN_SERVER"),
         )
     )
     CLIENT = KBRepository(

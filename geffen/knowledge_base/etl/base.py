@@ -33,8 +33,10 @@ class KBETLBase(KBETL):
         self.chunks_metadata = [chunk.metadata for chunk in self.chunks]
         self.ids             = [str(uuid.uuid1()) for _ in self.chunks] 
     
-    def embed_data(self, embedding_fn: EmbeddingFunction) -> None:
-        self.embeddings = embedding_fn(self.chunks_content)
+    def embed_data(self, embedding_fn: EmbeddingFunction, batch_size: int = 128) -> None:
+        self.embeddings = list()
+        for i in tqdm(range(0, len(self.ids), batch_size)):
+            self.embeddings += embedding_fn(self.chunks_content[i:i+batch_size])
         
     def load_data(self, collection, batch_size: int = 128) -> None:
         for i in tqdm(range(0, len(self.ids), batch_size)):
