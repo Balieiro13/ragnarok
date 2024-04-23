@@ -8,7 +8,7 @@ from langchain.llms.huggingface_text_gen_inference import HuggingFaceTextGenInfe
 from langchain.schema.runnable import ConfigurableField
 
 from knowledge_base.config import KBConfig
-from knowledge_base.embeddings.embedding_functions import HFTEIEmbeddingFunction
+from knowledge_base.embeddings.embedding_functions import HuggingFaceTEI
 from chain.retrieval import retrieval_qa
 
 
@@ -27,13 +27,13 @@ mistral_template = '''[INST] \
 
 db_config = KBConfig(
         host=os.getenv("DB_HOST"),
-        embedding_fn=HFTEIEmbeddingFunction(
-            os.getenv("EMBEDDING_FN_SERVER")
+        embedding_fn=HuggingFaceTEI(
+            model=os.getenv("EMBEDDING_FN_SERVER")
         )
     )
 retriever = Chroma(
         client=db_config.client,
-        collection_name="poc",
+        collection_name="pf2e",
         embedding_function=db_config.embedding_fn,
     ).as_retriever(
         search_type="mmr",

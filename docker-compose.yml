@@ -9,7 +9,7 @@ services:
       - 8000:8000
     restart: always
 
-  text_generation_inference:
+  tgi:
     image: ghcr.io/huggingface/text-generation-inference:latest
     shm_size: 1g
     volumes:
@@ -30,7 +30,7 @@ services:
               capabilities: [gpu]
     restart: always
 
-  text_embeddings_inference:
+  tei:
     image: ghcr.io/huggingface/text-embeddings-inference:latest
     volumes:
       - /var/ragnarok/TEI/data:/data
